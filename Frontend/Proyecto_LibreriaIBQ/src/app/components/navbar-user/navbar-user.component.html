@@ -1,1 +1,54 @@
-<p>navbar-user works!</p>
+<div class="div-gen-navbar-us">
+    <form class="form">
+        <label for="search">
+            <input (input)="emitFilterFN()" [(ngModel)]="filterString" [ngModelOptions]="{standalone: true}"
+                class="input" type="text" required="" placeholder="Busqueda ..." id="search">
+
+            <div class="fancy-bg"></div>
+            <div class="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"
+                    class="r-14j79pv r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-4wgw6l r-f727ji r-bnwqim r-1plcrui r-lrvibr">
+                    <g>
+                        <path
+                            d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                        </path>
+                    </g>
+                </svg>
+            </div>
+            <button class="close-btn" (click)="filterString = ''; emitFilterFN()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </label>
+    </form>
+
+    <div>
+        <select [(ngModel)]="selectedCategory" name="opcion" (change)="emitFilterFN()">
+            <option value="" selected>Selecciona una categoría</option>
+
+            @for (opcion of opciones; track opcion) {
+            <option [value]="opcion" [innerHTML]="opcion"></option>
+            }
+        </select>
+    </div>
+
+
+
+    <!-- Logout button -->
+    <button class="Btn" (click)="logout()">
+
+        <div class="sign"><svg viewBox="0 0 512 512">
+                <path
+                    d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                </path>
+            </svg></div>
+
+        <div class="text">Logout</div>
+    </button>
+
+
+
+</div>

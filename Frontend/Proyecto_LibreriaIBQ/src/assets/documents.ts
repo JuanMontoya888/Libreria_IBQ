@@ -8,7 +8,7 @@ export const documents: document[] = [
     file_category: 'Artículo',
     file_name: 'IA_aplicada_salud.pdf',
     file_path: '/uploads/jhernandez/IA_aplicada_salud.pdf',
-    file_type: 'application/pdf',
+    file_type: 'application/word',
     uploaded_at: new Date('2025-05-10T10:24:00')
   },
   {
@@ -18,7 +18,7 @@ export const documents: document[] = [
     file_category: 'Libro',
     file_name: 'Bases_de_datos_distribuidas.epub',
     file_path: '/uploads/mperez/Bases_de_datos_distribuidas.epub',
-    file_type: 'application/epub+zip',
+    file_type: 'application/zip',
     uploaded_at: new Date('2025-03-12T14:50:00')
   },
   {
@@ -28,7 +28,7 @@ export const documents: document[] = [
     file_category: 'Informe',
     file_name: 'informe_anual_energia2024.docx',
     file_path: '/uploads/aluna/informe_anual_energia2024.docx',
-    file_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    file_type: 'application/word',
     uploaded_at: new Date('2025-01-20T08:10:00')
   },
   {
@@ -88,7 +88,7 @@ export const documents: document[] = [
     file_category: 'Manual Técnico',
     file_name: 'docker_kubernetes_manual.docx',
     file_path: '/uploads/mperez/docker_kubernetes_manual.docx',
-    file_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    file_type: 'application/zip',
     uploaded_at: new Date('2025-03-15T16:00:00')
   },
   {
@@ -98,7 +98,7 @@ export const documents: document[] = [
     file_category: 'Libro',
     file_name: 'Diseño_de_algoritmos_eficientes.epub',
     file_path: '/uploads/ncastro/Diseño_de_algoritmos_eficientes.epub',
-    file_type: 'application/epub+zip',
+    file_type: 'application/zip',
     uploaded_at: new Date('2025-02-08T10:33:00')
   },
   {
@@ -128,7 +128,7 @@ export const documents: document[] = [
     file_category: 'Libro',
     file_name: 'Robotica_y_automatizacion.epub',
     file_path: '/uploads/emartinez/Robotica_y_automatizacion.epub',
-    file_type: 'application/epub+zip',
+    file_type: 'application/zip',
     uploaded_at: new Date('2025-05-30T17:00:00')
   },
   {
@@ -178,7 +178,7 @@ export const documents: document[] = [
     file_category: 'Libro',
     file_name: 'Introduccion_computacion_cuantica.epub',
     file_path: '/uploads/ymorales/Introduccion_computacion_cuantica.epub',
-    file_type: 'application/epub+zip',
+    file_type: 'application/zip',
     uploaded_at: new Date('2025-01-28T12:10:00')
   },
   {
@@ -188,7 +188,7 @@ export const documents: document[] = [
     file_category: 'Informe',
     file_name: 'balance_proyecto_sistemas_2024.docx',
     file_path: '/uploads/rgarcia/balance_proyecto_sistemas_2024.docx',
-    file_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    file_type: 'application/word',
     uploaded_at: new Date('2025-02-20T09:55:00')
   },
   {
@@ -238,7 +238,7 @@ export const documents: document[] = [
     file_category: 'Informe',
     file_name: 'evaluacion_algoritmos_predictivos.docx',
     file_path: '/uploads/ppalacios/evaluacion_algoritmos_predictivos.docx',
-    file_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    file_type: 'application/word',
     uploaded_at: new Date('2025-01-07T07:30:00')
   },
   {

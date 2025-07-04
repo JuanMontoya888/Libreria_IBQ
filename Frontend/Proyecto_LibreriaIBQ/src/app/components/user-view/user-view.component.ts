@@ -15,14 +15,39 @@ import { DatePipe } from '@angular/common';
 })
 export class UserViewComponent {
   documents!: Array<document>;
+  documentsFiltered!: Array<document>;
 
-  constructor (
-    private docs_service: DocumentsService
-  ) {}
+  constructor(
+    private docsService: DocumentsService
+  ) { }
 
 
   ngOnInit(): void {
-    this.documents = this.docs_service.getDocuments();
+    this.documents = this.docsService.getDocuments();
+    this.documentsFiltered = this.documents;
+  }
+
+  filterDocuments(filters: { filter: string, selectedCategory: string }): void {
+    const { filter, selectedCategory } = filters;
+    const query = filter.toString().toLowerCase() || '';
+
+    // Primer filtro que escanea campo por campo
+    this.documentsFiltered = this.documents
+      .filter((doc: document) => {
+        if (!doc) return false;
+
+        return (Object.entries(doc).some((dc) => dc?.toString().toLowerCase().includes(query)));
+      });
+
+    // Second filter, only scan category
+    this.documentsFiltered = this.documentsFiltered
+      .filter((doc: document) => { // If it returns true, will return document
+        if (!doc) return false;
+        if (!selectedCategory) return true;
+
+        return doc.file_category === selectedCategory;
+      });
+
   }
 
 }

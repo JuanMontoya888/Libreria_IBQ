@@ -9,7 +9,3 @@ export const routes: Routes = [
     { path: 'admin-view', component: AdminViewComponent },
     { path: 'user-view', component: UserViewComponent },
 ];
-
-export const routes_admin: Routes = [
-
-];

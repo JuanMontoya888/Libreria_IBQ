@@ -1,27 +1,45 @@
-<app-navbar-user></app-navbar-user>
+<app-navbar-user (emitFilter)="this.filterDocuments($event)"></app-navbar-user>
 
 <div class="div-gen-user">
     <section class="container">
         @if (this.documents.length > 0) {
         <div class="row gx-4 gy-5">
-            @for (doc of documents; track doc) {
+            @for (doc of documentsFiltered; track doc; let i = $index) {
+
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-
-                <div class="card">
-                    <img src="/src/assets/pdf.png" alt="PDF">
+                <div class="card__">
+                    <img src="pdf.png" alt="PDF">
                     <div class="card__content">
-
                         <p class="card__title">{{ doc.file_name }}</p>
                         <p class="card__description">{{ doc.file_category }}</p>
-                        <p class="text-muted small mb-0">
+                        <p class="small mb-0">
                             Subido por: {{ doc.username }}
                         </p>
-                        <p class="text-muted small">
+                        <p class="small">
                             {{ doc.uploaded_at | date: 'shortDate' }}
                         </p>
                     </div>
                 </div>
+
+                <!-- From Uiverse.io by Na3ar-17 -->
+                <div class="container_butt">
+                    <label class="label">
+                        <input type="checkbox" class="input" />
+                        <span class="circle"><svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" d="M12 19V5m0 14-4-4m4 4 4-4"></path>
+                            </svg>
+                            <div class="square"></div>
+                        </span>
+                        <p class="title">Download</p>
+                        <p class="title">Open</p>
+                    </label>
+                </div>
             </div>
+
+
+
             }
         </div>
         } @else {

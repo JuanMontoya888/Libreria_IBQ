@@ -7,9 +7,20 @@
   font-style: normal;
 }
 
+/* Estilos que cambian dependiendo de el modo del boton */
+:root[data-theme='light'] {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+}
+
+:root[data-theme='dark'] {
+  --bg-color: #212121;
+  --text-color: #f1f1f1;
+}
+
 body {
-  background-color: #212121;
-  color: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: 'BarlowCondensed';
 
   .alerts {
