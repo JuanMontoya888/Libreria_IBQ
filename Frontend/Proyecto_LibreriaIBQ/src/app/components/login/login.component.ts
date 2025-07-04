@@ -47,6 +47,6 @@ export class LoginComponent {
       return;
     }
 
-    us[0].username.slice(0, 2) === 'al' ? this.router.navigate(['/user-view']) : this.router.navigate(['/admin-view']);
+    us[0].username.slice(0, 2) === 'al' ? this.router.navigate(['/user-view']) : this.router.navigate(['/admin/usuarios']);
   }
 }

@@ -3,19 +3,18 @@
     <div
         style="display: flex; flex-direction: column; align-items: flex-end ; justify-content: flex-end; width: 50vw; gap: 1rem;">
         <!-- Options -->
-        <div class="glass-radio-group">
-            <input type="radio" name="plan" id="glass-silver" checked="" />
-            <label for="glass-silver">Editar Usuarios</label>
+        <div class="glass-radio-group" (change)="this.change()">
+            <input type="radio" id="glass-silver" name="plan" value="Usuarios" [(ngModel)]="buttonSelected" />
+            <label for="glass-silver">Usuarios</label>
 
-            <input type="radio" name="plan" id="glass-gold" />
-            <label for="glass-gold">Editar Documentos</label>
+            <input type="radio" id="glass-gold" name="plan" value="Documentos" [(ngModel)]="buttonSelected" />
+            <label for="glass-gold">Documentos</label>
 
-            <input type="radio" name="plan" id="glass-platinum" />
-            <label for="glass-platinum">Editar Categorias</label>
+            <input type="radio" id="glass-platinum" name="plan" value="Categorias" [(ngModel)]="buttonSelected" />
+            <label for="glass-platinum">Categorias</label>
 
             <div class="glass-glider"></div>
         </div>
-
 
         <!-- Logout button -->
         <button class="Btn" (click)="logout()">

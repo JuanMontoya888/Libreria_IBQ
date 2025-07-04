@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-user',
   imports: [
     FormsModule,
-    RouterOutlet
   ],
   templateUrl: './navbar-user.component.html',
   styleUrl: './navbar-user.component.css'
