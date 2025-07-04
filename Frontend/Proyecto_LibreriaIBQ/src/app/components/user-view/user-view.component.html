@@ -1,0 +1,33 @@
+<app-navbar-user></app-navbar-user>
+
+<div class="div-gen-user">
+    <section class="container">
+        @if (this.documents.length > 0) {
+        <div class="row gx-4 gy-5">
+            @for (doc of documents; track doc) {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+
+                <div class="card">
+                    <img src="/src/assets/pdf.png" alt="PDF">
+                    <div class="card__content">
+
+                        <p class="card__title">{{ doc.file_name }}</p>
+                        <p class="card__description">{{ doc.file_category }}</p>
+                        <p class="text-muted small mb-0">
+                            Subido por: {{ doc.username }}
+                        </p>
+                        <p class="text-muted small">
+                            {{ doc.uploaded_at | date: 'shortDate' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="alert alert-warning text-center" role="alert">
+            No se encontraron documentos.
+        </div>
+        }
+    </section>
+</div>
