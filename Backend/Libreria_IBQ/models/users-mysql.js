@@ -7,6 +7,9 @@ const users_q = {
     getUserByID: (id, callback) => {
         conexion.query('SELECT * FROM users WHERE id = ?', [id], callback);
     },
+    getUserByUsername: (username, callback) => {
+        conexion.query('SELECT * FROM users WHERE username = ?', [username], callback);
+    },
     addNewUser: (dataUser, callback) => {
         conexion.query('INSERT INTO users SET ?', [dataUser], callback);
     },

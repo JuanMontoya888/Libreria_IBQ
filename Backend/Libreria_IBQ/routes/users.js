@@ -63,6 +63,23 @@ router.post('/addNewUser', async (req, res) => {
   }
 });
 
+// Modify user
+router.post('/updateUser', (req, res) => {
+  try {
+    const { id, data } = req.body;
+
+    users_db.updateUser(data, id, (err, result) => {
+      if (err) return res.status(500).json({ ok: false, message: err });
+
+      return result.affectedRows === 0 ?
+        res.status(404).json({ ok: false, message: 'user-not-found' }) : res.status(200).json({ ok: true, message: result });
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: error });
+  }
+});
+
+// Delete User
 router.delete('/deleteUser/:id', (req, res) => {
   try {
     users_db.deleteUser(req.params.id, (err, result) => {
@@ -76,5 +93,27 @@ router.delete('/deleteUser/:id', (req, res) => {
   }
 });
 
+
+// Login
+router.post('/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+
+    users_db.getUserByUsername(username, async (err, result) => {
+      if (err) return res.status(500).json({ ok: false, message: err });
+      if (result.length === 0) return res.status(404).json({ ok: false, message: 'user-not-found' });
+
+      const hash = result[0].passw;
+      const isMatch = await bcrypt.compare(String(password), String(hash));
+
+      return isMatch ?
+        res.status(200).json({ ok: true, message: 'password-is-match' }) :
+        res.status(200).json({ ok: false, message: 'password-is-not-match' });
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: error });
+  }
+});
 
 module.exports = router;
