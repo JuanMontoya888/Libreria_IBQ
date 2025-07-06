@@ -1,0 +1,23 @@
+const conexion = require('./conexion');
+
+const users_q = {
+    getAllUsers: (callback) => {
+        conexion.query('SELECT * FROM users', callback);
+    },
+    getUserByID: (id, callback) => {
+        conexion.query('SELECT * FROM users WHERE id = ?', [id], callback);
+    },
+    addNewUser: (dataUser, callback) => {
+        conexion.query('INSERT INTO users SET ?', [dataUser], callback);
+    },
+    updateUser: (dataUser, id, callback) => {
+        conexion.query('UPDATE users SET ? WHERE id = ?', [dataUser, id], callback);
+    },
+    deleteUser: (id, callback) => {
+        conexion.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
+            callback(err, result);
+        });
+    },
+};
+
+module.exports = users_q;
