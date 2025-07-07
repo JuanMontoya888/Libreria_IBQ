@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const users_db = require('../models/users-mysql');
-const documents_db = require('../models/documents-mysql');
-const categories_db = require('../models/categories-mysql');
 
 // encriptar contrasenias
 const saltRounds = 10;
@@ -19,7 +17,7 @@ router.get('/getAllUsers', (req, res) => {
   try {
     users_db.getAllUsers((err, result) => {
       if (err) return res.status(500).json({ ok: false, message: err });
-      res.status(200).json({ ok: true, users: result });
+      return res.status(200).json({ ok: true, users: result });
     });
 
   } catch (error) {
@@ -55,7 +53,7 @@ router.post('/addNewUser', async (req, res) => {
     users_db.addNewUser(user, (err, result) => {
       if (err) return res.status(500).json({ ok: false, message: err });
 
-      res.status(200).json({ ok: true, message: result });
+      return res.status(200).json({ ok: true, message: result });
     });
 
   } catch (error) {
@@ -104,11 +102,16 @@ router.post('/login', (req, res) => {
       if (err) return res.status(500).json({ ok: false, message: err });
       if (result.length === 0) return res.status(404).json({ ok: false, message: 'user-not-found' });
 
-      const hash = result[0].passw;
-      const isMatch = await bcrypt.compare(String(password), String(hash));
+      // Recorremos todos los posibles casos
+      const promises = await Promise.all(result.map(async (us, index) => {
+        const isMatch = await bcrypt.compare(String(password), String(us.passw));
+        return { isMatch, index };
+      }));
 
-      return isMatch ?
-        res.status(200).json({ ok: true, message: 'password-is-match' }) :
+      const matchedUser = promises.find((us) => us.isMatch);
+
+      return matchedUser ?
+        res.status(200).json({ ok: true, user: result[matchedUser.index], message: 'password-is-match' }) :
         res.status(200).json({ ok: false, message: 'password-is-not-match' });
     });
   } catch (error) {

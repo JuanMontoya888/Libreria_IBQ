@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { UsersService } from '../../services/users.service';
 @Component({
   selector: 'app-login',
   imports: [
@@ -19,7 +20,8 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private formbuilder: FormBuilder
+    private formbuilder: FormBuilder,
+    private usersService: UsersService
   ) { }
 
   ngOnInit(): void {
@@ -30,23 +32,28 @@ export class LoginComponent {
   }
 
   login(): void {
-    const users = [
-      { username: 'al350176', password: 'juan1234**' },
-      { username: '324882', password: 'juan1234**' }
-    ];
+    const credentials = {};
+    this.usersService.login(this.login_form.get('username')?.value, this.login_form.get('password')?.value)
+      .subscribe({
+        next: (result) => {
+          const { ok, message } = result;
 
-    const us = users.filter((us: { username: string, password: string }) =>
-      this.login_form.get('password')?.value === us.password && this.login_form.get('username')?.value === us.username);
+          if (!ok) {
+            Swal.fire({
+              icon: "error",
+              title: "Credenciales invalidas...",
+              text: "Ingrese las credenciales correctamente!",
+            });
 
-    if (us.length < 1) {
-      Swal.fire({
-        icon: "error",
-        title: "Credenciales invalidas...",
-        text: "Ingrese las credenciales correctamente!",
+            return;
+          }
+          const { user } = result;
+
+          user.is_admin ? this.router.navigate(['/admin/usuarios']) : this.router.navigate(['/user-view']);
+        },
+        error: (error) => {
+          console.log(error);
+        }
       });
-      return;
-    }
-
-    us[0].username.slice(0, 2) === 'al' ? this.router.navigate(['/user-view']) : this.router.navigate(['/admin/usuarios']);
   }
 }

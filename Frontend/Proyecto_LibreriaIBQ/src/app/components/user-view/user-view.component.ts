@@ -18,12 +18,24 @@ export class UserViewComponent {
   documentsFiltered!: Array<document>;
 
   constructor(
-    private docsService: DocumentsService
+    private docsService: DocumentsService,
   ) { }
 
 
   ngOnInit(): void {
-    this.documents = this.docsService.getDocuments();
+    this.docsService.getDocuments()
+      .subscribe({
+        next: (result) => {
+          const { ok, documents } = result;
+
+          this.documents = ok ? documents : this.docsService.getDocuments2();
+          console.log(this.documents, ok);
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+
     this.documentsFiltered = this.documents;
   }
 
