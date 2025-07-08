@@ -4,11 +4,27 @@
     <section class="container">
         @if (this.documents.length > 0) {
         <div class="row gx-4 gy-5">
-            @for (doc of documentsFiltered; track doc; let i = $index) {
+            @for (doc of documentsFiltered; track doc.id_document; let i = $index) {
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card__">
-                    <img src="pdf.png" alt="PDF">
+                    @switch (doc.file_type.split('/')[doc.file_type.split('/').length - 1]) {
+                        @case ('pdf') {
+                            <img src="pdf.png" alt="PDF">
+                        }
+                        @case ('zip') {
+                            <img src="zip.png" alt="ZIP">
+                        }
+                        @case ('docx') {
+                            <img src="docx.png" alt="DOCX">   
+                        }
+                        @case ('sheet') {
+                            <img src="xlsx.png" alt="XLSX">   
+                        }
+                        @default {
+                            <img src="other.png" alt="DOCUMENT">   
+                        }
+                    }
                     <div class="card__content">
                         <p class="card__title">{{ doc.file_name }}</p>
                         <p class="card__description">{{ doc.file_category }}</p>
@@ -21,12 +37,12 @@
                     </div>
                 </div>
 
-                <!-- From Uiverse.io by Na3ar-17 -->
                 <div class="container_butt">
                     <label class="label">
                         <input type="checkbox" class="input" />
-                        <span class="circle"><svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24">
+                        <span class="circle">
+                            <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="1.5" d="M12 19V5m0 14-4-4m4 4 4-4"></path>
                             </svg>

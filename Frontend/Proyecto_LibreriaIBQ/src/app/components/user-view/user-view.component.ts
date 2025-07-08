@@ -14,8 +14,8 @@ import { DatePipe } from '@angular/common';
   styleUrl: './user-view.component.css'
 })
 export class UserViewComponent {
-  documents!: Array<document>;
-  documentsFiltered!: Array<document>;
+  documents: Array<document> = [];
+  documentsFiltered: Array<document> = [];
 
   constructor(
     private docsService: DocumentsService,
@@ -27,16 +27,15 @@ export class UserViewComponent {
       .subscribe({
         next: (result) => {
           const { ok, documents } = result;
-
           this.documents = ok ? documents : this.docsService.getDocuments2();
-          console.log(this.documents, ok);
+
+          this.documentsFiltered = this.documents;
         },
         error: (err) => {
           console.log(err);
         }
       });
 
-    this.documentsFiltered = this.documents;
   }
 
   filterDocuments(filters: { filter: string, selectedCategory: string }): void {

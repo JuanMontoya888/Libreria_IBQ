@@ -35,7 +35,8 @@ router.get('/getUserByID/:id', (req, res) => {
       if (err) return res.status(500).json({ ok: false, message: err });
 
       return result.length === 0 ?
-        res.status(404).json({ ok: false, message: 'user-not-found' }) : res.status(200).json({ ok: true, user: result });
+        res.status(404).json({ ok: false, message: 'user-not-found' }) :
+        res.status(200).json({ ok: true, user: result });
     });
 
   } catch (error) {
@@ -73,7 +74,8 @@ router.post('/updateUser', (req, res) => {
       if (err) return res.status(500).json({ ok: false, message: err });
 
       return result.affectedRows === 0 ?
-        res.status(404).json({ ok: false, message: 'user-not-found' }) : res.status(200).json({ ok: true, message: result });
+        res.status(404).json({ ok: false, message: 'user-not-found' }) :
+        res.status(200).json({ ok: true, message: result });
     });
   } catch (error) {
     return res.status(500).json({ ok: false, message: error });
@@ -87,7 +89,8 @@ router.delete('/deleteUser/:id', (req, res) => {
       if (err) return res.status(500).json({ ok: false, message: err });
 
       return result.affectedRows === 0 ?
-        res.status(404).json({ ok: false, message: 'user-not-found' }) : res.status(200).json({ ok: true, message: result });
+        res.status(404).json({ ok: false, message: 'user-not-found' }) :
+        res.status(200).json({ ok: true, message: result });
     });
   } catch (error) {
     return res.status(500).json({ ok: false, message: error });
