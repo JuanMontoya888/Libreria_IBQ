@@ -23,7 +23,7 @@ export class UserViewComponent {
 
 
   ngOnInit(): void {
-    this.docsService.getDocuments()
+    this.docsService.getAllDocuments()
       .subscribe({
         next: (result) => {
           const { ok, documents } = result;

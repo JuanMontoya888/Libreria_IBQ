@@ -66,9 +66,11 @@ router.post('/addNewUser', async (req, res) => {
 });
 
 // Modify user
-router.post('/updateUser', (req, res) => {
+router.post('/updateUser', async(req, res) => {
   try {
     const { id, data } = req.body;
+    
+    data.passw = await bcrypt.hash(data.passw, saltRounds);
 
     users_db.updateUser(data, id, (err, result) => {
       if (err) return res.status(500).json({ ok: false, message: err });

@@ -8,14 +8,19 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DocumentsService {
-  urapi: string = 'http://127.0.0.1:3000/documents';
+  urapi_doc: string = 'http://127.0.0.1:3000/documents';
+  urapi_cat: string = 'http://127.0.0.1:3000/categories';
 
   constructor(
     private http: HttpClient
   ) { }
 
-  getDocuments(): Observable<any> {
-    return this.http.get(this.urapi + '/getAllDocuments');
+  getAllDocuments(): Observable<any> {
+    return this.http.get(this.urapi_doc + '/getAllDocuments');
+  }
+
+  getAllCategories(): Observable<any> {
+    return this.http.get(this.urapi_cat + '/getAllCategories');
   }
 
   getDocuments2(): Array<document> {

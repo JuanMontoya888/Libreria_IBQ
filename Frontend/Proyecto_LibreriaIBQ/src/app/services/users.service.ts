@@ -6,12 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService {
-  urapi: string = 'http://127.0.0.1:3000/users';
+  private urapi: string = 'http://127.0.0.1:3000/users';
 
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(this.urapi + '/login', { username, password });
+  }
+
+  getAllUsers(): Observable<any> {
+    return this.http.get(this.urapi + '/getAllUsers');
   }
 
 }
