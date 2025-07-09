@@ -17,8 +17,7 @@ import Swal from 'sweetalert2';
 })
 export class UsuariosComponent {
   users: Array<user> = [];
-  usersFiltered: Array<user> = [];
-  selectedUser: number = -1;
+  filteredUsers: Array<user> = [];
   formUser!: FormGroup;
   showFormUser: boolean = false;
   isAddingNewUser: boolean = false;
@@ -33,10 +32,10 @@ export class UsuariosComponent {
     this.formUser = this.formBuilder.group({
       id_account: [''],
       username: ['', [Validators.required]],
-      passw: ['', [Validators.required]],
+      passw: [''],
       first_name: ['', [Validators.required]],
       last_name: ['', [Validators.required]],
-      id: ['', [Validators.required]],
+      id: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
       is_admin: [false, [Validators.required]],
     });
 
@@ -46,11 +45,10 @@ export class UsuariosComponent {
   getUsersDB(): void {
     this.usersService.getAllUsers()
       .subscribe({
-        next: (result) => {
-          const { ok, users } = result;
+        next: ({ ok, users }) => {
           if (ok) {
             this.users = users;
-            this.usersFiltered = this.users;
+            this.filteredUsers = this.users;
           }
         },
         error: (error) => {
@@ -61,25 +59,41 @@ export class UsuariosComponent {
 
   userSelected(index: number): void {
     this.showFormUser = true;
-    this.selectedUser = index;
     this.isAddingNewUser = false;
 
     this.formUser.patchValue({
-      ...this.usersFiltered[index],
+      ...this.filteredUsers[index],
       passw: '',
-      is_admin: Boolean(this.usersFiltered[index].is_admin)
+      is_admin: Boolean(this.filteredUsers[index].is_admin)
     });
   }
 
   emitFilterFN(): void {
     const query = this.filterString.toString().toLowerCase();
 
-    this.usersFiltered = this.users
+    this.filteredUsers = this.users
       .filter((user: user) => {
         if (!user) return false;
 
         return (Object.entries(user).some((us) => us?.toString().toLowerCase().includes(query)));
       });
+  }
+
+  addingNewUser(): void {
+    this.showFormUser = true;
+
+    this.isAddingNewUser = true;
+    this.formUser.reset();
+  }
+
+  modifyValues(): void {
+    const username = Boolean(this.formUser.get('is_admin')?.value) ?
+      `${this.formUser.get('id')?.value}` : `al${this.formUser.get('id')?.value}`;
+
+    this.formUser.patchValue({
+      username: username,
+      passw: `passw_${this.formUser.get('id')?.value}`
+    });
   }
 
   deleteUser(): void {
@@ -124,13 +138,67 @@ export class UsuariosComponent {
             });
           }
         });
-      }
+      } //if confirmation
     });
 
   }
 
   modifyUser(): void {
+    if (this.formUser.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario inválido',
+        text: 'Por favor completa todos los campos requeridos.',
+      });
+      return;
+    }
 
+    const { id_account, ...user } = this.formUser.value;
+
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro?',
+      text: 'Esta acción modificará permanentemente al usuario.',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, modificar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usersService.updateUser(id_account, user)
+          .subscribe({
+            next: ({ ok, message }) => {
+              if (ok) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Usuario modificado',
+                  text: 'El usuario fue modificado correctamente.',
+                  timer: 2000,
+                  showConfirmButton: false,
+                });
+
+                this.formUser.reset();
+                this.showFormUser = false;
+                this.getUsersDB();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error al modificar',
+                  text: message || 'No se pudo modificar el usuario.',
+                });
+              }
+            },
+            error: (err) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error del servidor',
+                text: err?.message || 'Ocurrió un error inesperado al modificar.',
+              });
+            }
+          });
+      }
+    });
   }
 
   addNewUser(): void {
@@ -199,22 +267,5 @@ export class UsuariosComponent {
       });
   }
 
-  addingNewUser(): void {
-    this.showFormUser = true;
-
-    this.isAddingNewUser = true;
-    this.formUser.reset();
-  }
-
-  modifyValues(): void {
-    console.log(this.formUser.get('is_admin')?.value);
-    const username = Boolean(this.formUser.get('is_admin')?.value) ?
-      `${this.formUser.get('id')?.value}` : `al${this.formUser.get('id')?.value}`;
-
-    this.formUser.patchValue({
-      username: username,
-      passw: `passw_${this.formUser.get('id')?.value}`
-    });
-  }
 
 }

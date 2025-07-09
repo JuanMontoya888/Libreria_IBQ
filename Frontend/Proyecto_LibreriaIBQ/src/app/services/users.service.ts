@@ -26,8 +26,8 @@ export class UsersService {
     return this.http.delete(this.urapi + `/deleteUser/${id}`);
   }
 
-  updateUser(ip: number, data: any): Observable<any> {
-    return this.http.post(this.urapi + '/updateUser', { ip, data });
+  updateUser(id: number, data: any): Observable<any> {
+    return this.http.post(this.urapi + '/updateUser', { id, data });
   }
 
 }

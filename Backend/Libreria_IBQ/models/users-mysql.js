@@ -5,7 +5,7 @@ const users_q = {
         conexion.query('SELECT * FROM users', callback);
     },
     getUserByID: (id, callback) => {
-        conexion.query('SELECT * FROM users WHERE id = ?', [id], callback);
+        conexion.query('SELECT * FROM users WHERE id_account = ?', [id], callback);
     },
     getUserByUsername: (username, callback) => {
         conexion.query('SELECT * FROM users WHERE username = ?', [username], callback);
@@ -14,7 +14,7 @@ const users_q = {
         conexion.query('INSERT INTO users SET ?', [dataUser], callback);
     },
     updateUser: (dataUser, id, callback) => {
-        conexion.query('UPDATE users SET ? WHERE id = ?', [dataUser, id], callback);
+        conexion.query('UPDATE users SET ? WHERE id_account = ?', [dataUser, id], callback);
     },
     deleteUser: (id, callback) => {
         conexion.query('DELETE FROM users WHERE id_account = ?', [id], (err, result) => {
