@@ -22,6 +22,10 @@ export class UsersService {
     return this.http.post(this.urapi + '/addNewUser', { user });
   }
 
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(this.urapi + `/deleteUser/${id}`);
+  }
+
   updateUser(ip: number, data: any): Observable<any> {
     return this.http.post(this.urapi + '/updateUser', { ip, data });
   }

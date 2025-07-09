@@ -17,7 +17,7 @@ const users_q = {
         conexion.query('UPDATE users SET ? WHERE id = ?', [dataUser, id], callback);
     },
     deleteUser: (id, callback) => {
-        conexion.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
+        conexion.query('DELETE FROM users WHERE id_account = ?', [id], (err, result) => {
             callback(err, result);
         });
     },

@@ -83,6 +83,49 @@ export class UsuariosComponent {
   }
 
   deleteUser(): void {
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará permanentemente al usuario.',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usersService.deleteUser(Number(this.formUser.get('id_account')?.value)).subscribe({
+          next: ({ ok, message }) => {
+            if (ok) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Usuario eliminado',
+                text: 'El usuario fue eliminado correctamente.',
+                timer: 2000,
+                showConfirmButton: false,
+              });
+
+              this.formUser.reset();
+              this.showFormUser = false;
+              this.getUsersDB();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error al eliminar',
+                text: message || 'No se pudo eliminar el usuario.',
+              });
+            }
+          },
+          error: (err) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error del servidor',
+              text: err?.message || 'Ocurrió un error inesperado al eliminar.',
+            });
+          }
+        });
+      }
+    });
 
   }
 
@@ -129,7 +172,7 @@ export class UsuariosComponent {
             Swal.fire({
               icon: 'success',
               title: 'Usuario guardado',
-              text: message || 'El usuario fue registrado correctamente.',
+              text: 'El usuario fue registrado correctamente.',
               timer: 2000,
               showConfirmButton: false
             });
@@ -164,8 +207,10 @@ export class UsuariosComponent {
   }
 
   modifyValues(): void {
+    console.log(this.formUser.get('is_admin')?.value);
     const username = Boolean(this.formUser.get('is_admin')?.value) ?
       `${this.formUser.get('id')?.value}` : `al${this.formUser.get('id')?.value}`;
+
     this.formUser.patchValue({
       username: username,
       passw: `passw_${this.formUser.get('id')?.value}`
