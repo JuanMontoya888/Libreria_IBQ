@@ -3,6 +3,7 @@ import { UsersService } from '../../../services/users.service';
 import { user } from '../../../models/user';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-usuarios',
@@ -20,6 +21,7 @@ export class UsuariosComponent {
   selectedUser: number = -1;
   formUser!: FormGroup;
   showFormUser: boolean = false;
+  isAddingNewUser: boolean = false;
   filterString!: string;
 
   constructor(
@@ -29,7 +31,7 @@ export class UsuariosComponent {
 
   ngOnInit(): void {
     this.formUser = this.formBuilder.group({
-      id_account: ['', [Validators.required]],
+      id_account: [''],
       username: ['', [Validators.required]],
       passw: ['', [Validators.required]],
       first_name: ['', [Validators.required]],
@@ -38,6 +40,10 @@ export class UsuariosComponent {
       is_admin: [false, [Validators.required]],
     });
 
+    this.getUsersDB();
+  }
+
+  getUsersDB(): void {
     this.usersService.getAllUsers()
       .subscribe({
         next: (result) => {
@@ -56,13 +62,114 @@ export class UsuariosComponent {
   userSelected(index: number): void {
     this.showFormUser = true;
     this.selectedUser = index;
+    this.isAddingNewUser = false;
 
     this.formUser.patchValue({
-      ...this.users[index],
+      ...this.usersFiltered[index],
       passw: '',
-      is_admin: Boolean(this.users[index].is_admin)
+      is_admin: Boolean(this.usersFiltered[index].is_admin)
     });
   }
 
+  emitFilterFN(): void {
+    const query = this.filterString.toString().toLowerCase();
+
+    this.usersFiltered = this.users
+      .filter((user: user) => {
+        if (!user) return false;
+
+        return (Object.entries(user).some((us) => us?.toString().toLowerCase().includes(query)));
+      });
+  }
+
+  deleteUser(): void {
+
+  }
+
+  modifyUser(): void {
+
+  }
+
+  addNewUser(): void {
+    if (this.formUser.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario inválido',
+        text: 'Por favor completa todos los campos requeridos.',
+      });
+      return;
+    }
+
+    //Omitiendo id_account
+    const { id_account, ...us } = this.formUser.value;
+    const user = {
+      ...us,
+      first_name: this.formUser.get('first_name')?.value
+        .toString()
+        .toLowerCase()
+        .split(' ')
+        .map((el: string) => el.charAt(0).toUpperCase() + el.slice(1))
+        .join(' '),
+
+
+      last_name: this.formUser.get('last_name')?.value.toString()
+        .toLowerCase()
+        .split(' ')
+        .map((el: string) => el.charAt(0).toUpperCase() + el.slice(1))
+        .join(' '),
+
+    };
+
+    this.usersService.addNewUser(user)
+      .subscribe({
+        next: (result) => {
+          const { ok, message } = result;
+
+          if (ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Usuario guardado',
+              text: message || 'El usuario fue registrado correctamente.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            this.formUser.reset();
+            this.showFormUser = false;
+
+            this.getUsersDB();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al guardar',
+              text: message || 'No se pudo registrar el usuario.',
+            });
+          }
+        },
+        error: (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: error?.message || 'Ocurrió un error inesperado.',
+          });
+        }
+      });
+  }
+
+  addingNewUser(): void {
+    this.showFormUser = true;
+
+    this.isAddingNewUser = true;
+    this.formUser.reset();
+  }
+
+  modifyValues(): void {
+    const username = Boolean(this.formUser.get('is_admin')?.value) ?
+      `${this.formUser.get('id')?.value}` : `al${this.formUser.get('id')?.value}`;
+    this.formUser.patchValue({
+      username: username,
+      passw: `passw_${this.formUser.get('id')?.value}`
+    });
+  }
 
 }

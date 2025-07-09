@@ -18,4 +18,12 @@ export class UsersService {
     return this.http.get(this.urapi + '/getAllUsers');
   }
 
+  addNewUser(user: any): Observable<any> {
+    return this.http.post(this.urapi + '/addNewUser', { user });
+  }
+
+  updateUser(ip: number, data: any): Observable<any> {
+    return this.http.post(this.urapi + '/updateUser', { ip, data });
+  }
+
 }

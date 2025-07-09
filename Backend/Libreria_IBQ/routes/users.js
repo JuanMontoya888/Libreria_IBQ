@@ -47,14 +47,16 @@ router.get('/getUserByID/:id', (req, res) => {
 // Add new User
 router.post('/addNewUser', async (req, res) => {
   try {
-    const hash = await bcrypt.hash(req.body.passw, saltRounds);
-
-    const user = {
-      ...req.body,
+    const { user } = req.body;
+    const hash = await bcrypt.hash(user.passw, saltRounds);
+    const userModify = {
+      ...user,
       passw: hash
     };
 
-    users_db.addNewUser(user, (err, result) => {
+    console.log(user);
+
+    users_db.addNewUser(userModify, (err, result) => {
       if (err) return res.status(500).json({ ok: false, message: err });
 
       return res.status(200).json({ ok: true, message: result });
@@ -66,10 +68,10 @@ router.post('/addNewUser', async (req, res) => {
 });
 
 // Modify user
-router.post('/updateUser', async(req, res) => {
+router.post('/updateUser', async (req, res) => {
   try {
     const { id, data } = req.body;
-    
+
     data.passw = await bcrypt.hash(data.passw, saltRounds);
 
     users_db.updateUser(data, id, (err, result) => {
@@ -105,6 +107,7 @@ router.post('/login', (req, res) => {
   try {
     const { username, password } = req.body;
 
+    console.log(username, password);
 
     users_db.getUserByUsername(username, async (err, result) => {
       if (err) return res.status(500).json({ ok: false, message: err });
