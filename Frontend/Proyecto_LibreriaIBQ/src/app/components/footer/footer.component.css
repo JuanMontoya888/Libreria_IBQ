@@ -1,1 +1,6 @@
-.div-gen-footer {}
+.div-gen-footer {
+    padding: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
