@@ -30,4 +30,8 @@ export class DocumentsService {
   deleteDocumentByID(id_document: number): Observable<any> {
     return this.http.delete(this.urapi_doc + `/deleteDocument/${id_document}`);
   }
+
+  deleteCategoryByID(id_category: number): Observable<any> {
+    return this.http.delete(this.urapi_cat + `/deleteCategory/${id_category}`);
+  }
 }
