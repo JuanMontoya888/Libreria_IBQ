@@ -26,4 +26,8 @@ export class DocumentsService {
   getDocuments2(): Array<document> {
     return documents;
   }
+
+  deleteDocumentByID(id_document: number): Observable<any> {
+    return this.http.delete(this.urapi_doc + `/deleteDocument/${id_document}`);
+  }
 }
