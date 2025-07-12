@@ -12,16 +12,16 @@ const users_q = {
     },
     addNewUser: (dataUser, callback) => {
         conexion.query('SELECT id FROM users WHERE id = ?', [dataUser.id], (err, result) => {
-            if (err) return callback(err, { success: false });
-            if (result.length > 0) return callback(null, { success: false, message: `El usuario con ID ${dataUser.id} ya existe` });
+            if (err) return callback(err, { success: false, message: `error-server` });
+            if (result.length > 0) return callback(null, { success: false, message: `user-exists` });
 
             // Si no existe, insertamos el usuario
             conexion.query('INSERT INTO users SET ?', [dataUser], (err, result) => {
-                if (err) return callback(err, { success: false });
+                if (err) return callback(err, { success: false, message: `error-server` });
 
                 return callback(null, {
                     success: true,
-                    message: `Usuario con ID ${dataUser.id} creado exitosamente`,
+                    message: `was-created`,
                     insertId: result.insertId
                 });
             });

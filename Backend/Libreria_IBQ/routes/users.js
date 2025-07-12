@@ -94,20 +94,54 @@ router.post('/addNewUsers', upload.array('files'), async (req, res) => {
       const data = usedRange.value(); // Obtener los datos como un array de arrays
 
       const jsonData = [];
-      const headers = data[0];
+      const headers = data[0].map(h => (typeof h === 'string' ? h.trim() : undefined));
+
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
-        const rowObject = {};
+        const rowObject = [];
         headers.forEach((header, index) => {
-          rowObject[header] = row[index];
+          rowObject.push(row[index]);
         });
         jsonData.push(rowObject);
       }
       return { filename: file.originalname, data: jsonData };
     }));
 
+    const usersCreated = await Promise.all(
+      results.flatMap((dat) =>
+        dat.data.map(async (us) => {
+          const hash = await bcrypt.hash(`passw_${us[0]}`, saltRounds);
+          const dataUser = {
+            username: `al${us[0]}`,
+            passw: hash,
+            first_name: us[1],
+            last_name: us[2],
+            id: us[0],
+            is_admin: false
+          };
+
+          return new Promise((resolve) => {
+            users_db.addNewUser(dataUser, (err, result) => {
+              resolve({
+                ok: !err && result.success,
+                message: err || result,
+                dataUser
+              });
+            });
+          });
+        })
+      )
+    );
 
 
+    const mappedData = Array.from(usersCreated)
+      .filter(({ ok }) => !ok)
+      .map(({ message, dataUser }) => ({
+        message: message.message,
+        id: dataUser.id
+      }));
+
+    return res.status(200).json({ ok: true, mappedData });
   } catch (error) {
     return res.status(500).json({ ok: false, message: error });
   }

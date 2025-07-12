@@ -309,7 +309,9 @@ export class UsuariosComponent {
           console.log(formData);
           this.usersService.addNewUsers(formData)
             .subscribe({
-              next: (event) => {
+              next: (result) => {
+                const { ok, mappedData } = result;
+                console.log(ok, mappedData);
               },
               error: (error) => {
               }

@@ -32,7 +32,7 @@ export class UsersService {
   }
 
   addNewUsers(files: any): Observable<any> {
-    return this.http.post(this.urapi + '/addNewUsers', files,
-      { reportProgress: true, observe: 'events' });
+    return this.http.post(this.urapi + '/addNewUsers', files/*,
+      { reportProgress: true, observe: 'events' }*/);
   }
 }
