@@ -6,6 +6,13 @@ const users_db = require('../models/users-mysql');
 const saltRounds = 10;
 const bcrypt = require('bcrypt');
 
+// Leer un excel
+const XlsxPopulate = require('xlsx-populate');
+// Configurar multer para almacenar archivos en memoria
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -54,13 +61,52 @@ router.post('/addNewUser', async (req, res) => {
       passw: hash
     };
 
-    console.log(user);
-
     users_db.addNewUser(userModify, (err, result) => {
       if (err) return res.status(500).json({ ok: false, message: err });
 
-      return res.status(200).json({ ok: true, message: result });
+      return result.success ?
+        res.status(200).json({ ok: true, message: result }) :
+        res.status(200).json({ ok: false, message: result });
+
     });
+
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: error });
+  }
+});
+
+//Add users
+router.post('/addNewUsers', upload.array('files'), async (req, res) => {
+  try {
+    // Verificar si se recibieron archivos
+    if (!req.files || req.files.length === 0) {
+      console.log(req.files, '400');
+      return res.status(400).json({ error: 'No se recibieron archivos' });
+    }
+
+    // Abrir el archivo
+    const files = req.files;
+
+    const results = await Promise.all(Array.from(files).map(async (file) => {
+      const workbook = await XlsxPopulate.fromDataAsync(file.buffer);
+      const sheet = workbook.sheet(0); // Obtener la primera hoja
+      const usedRange = sheet.usedRange(); // Obtener el rango de celdas usadas
+      const data = usedRange.value(); // Obtener los datos como un array de arrays
+
+      const jsonData = [];
+      const headers = data[0];
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const rowObject = {};
+        headers.forEach((header, index) => {
+          rowObject[header] = row[index];
+        });
+        jsonData.push(rowObject);
+      }
+      return { filename: file.originalname, data: jsonData };
+    }));
+
+
 
   } catch (error) {
     return res.status(500).json({ ok: false, message: error });

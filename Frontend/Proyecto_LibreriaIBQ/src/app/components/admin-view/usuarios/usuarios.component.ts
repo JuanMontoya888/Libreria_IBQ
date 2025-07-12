@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { UsersService } from '../../../services/users.service';
 import { user } from '../../../models/user';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -96,7 +96,7 @@ export class UsuariosComponent {
     });
   }
 
-  deleteUser(): void {
+  deleteUser(index?: number): void {
     Swal.fire({
       icon: 'warning',
       title: '¿Estás seguro?',
@@ -108,7 +108,9 @@ export class UsuariosComponent {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.usersService.deleteUser(Number(this.formUser.get('id_account')?.value)).subscribe({
+        // This is if user delete user since users's list
+        const id_account = index ? this.filteredUsers[index].id_account : this.formUser.get('id_account')?.value;
+        this.usersService.deleteUser(Number(id_account)).subscribe({
           next: ({ ok, message }) => {
             if (ok) {
               Swal.fire({
@@ -253,7 +255,7 @@ export class UsuariosComponent {
             Swal.fire({
               icon: 'error',
               title: 'Error al guardar',
-              text: message || 'No se pudo registrar el usuario.',
+              text: 'No se pudo registrar el usuario.',
             });
           }
         },
@@ -261,11 +263,70 @@ export class UsuariosComponent {
           Swal.fire({
             icon: 'error',
             title: 'Error del servidor',
-            text: error?.message || 'Ocurrió un error inesperado.',
+            text: 'Ocurrió un error inesperado.',
           });
         }
       });
   }
 
+  uploadFile(event: Event | DragEvent): void {
+    let files: FileList | null = null;
+
+    //manejar evento de (change) o evento de (drop)
+    if (event instanceof Event && (event.target as HTMLInputElement).files) {
+      files = (event.target as HTMLInputElement).files;
+    } else if (event instanceof DragEvent && event.dataTransfer?.files) {
+      files = event.dataTransfer.files;
+    }
+
+
+    if (files && files.length > 0) {
+      const formData = new FormData();
+
+      Array.from(files).forEach((file: File) => {
+        if (file.name.endsWith('.xlsx') || file.name.endsWith('.csv')) {
+          formData.append('files', file, file.name);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al subir documento',
+            text: 'Solo se permiten documentos excel y csv.',
+          });
+        }
+      });
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Cargar archivo',
+        text: '¿Deseas procesar los datos del archivo seleccionado? Esto puede sobrescribir datos existentes.',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Procesar ahora',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log(formData);
+          this.usersService.addNewUsers(formData)
+            .subscribe({
+              next: (event) => {
+              },
+              error: (error) => {
+              }
+            });
+        }
+      });
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  onDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
 
 }

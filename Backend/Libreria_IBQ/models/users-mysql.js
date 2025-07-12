@@ -11,7 +11,21 @@ const users_q = {
         conexion.query('SELECT * FROM users WHERE username = ?', [username], callback);
     },
     addNewUser: (dataUser, callback) => {
-        conexion.query('INSERT INTO users SET ?', [dataUser], callback);
+        conexion.query('SELECT id FROM users WHERE id = ?', [dataUser.id], (err, result) => {
+            if (err) return callback(err, { success: false });
+            if (result.length > 0) return callback(null, { success: false, message: `El usuario con ID ${dataUser.id} ya existe` });
+
+            // Si no existe, insertamos el usuario
+            conexion.query('INSERT INTO users SET ?', [dataUser], (err, result) => {
+                if (err) return callback(err, { success: false });
+
+                return callback(null, {
+                    success: true,
+                    message: `Usuario con ID ${dataUser.id} creado exitosamente`,
+                    insertId: result.insertId
+                });
+            });
+        });
     },
     updateUser: (dataUser, id, callback) => {
         conexion.query('UPDATE users SET ? WHERE id_account = ?', [dataUser, id], callback);

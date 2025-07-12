@@ -34,4 +34,12 @@ export class DocumentsService {
   deleteCategoryByID(id_category: number): Observable<any> {
     return this.http.delete(this.urapi_cat + `/deleteCategory/${id_category}`);
   }
+
+  updateCategory(dataCategory: any, idCategory: number): Observable<any> {
+    return this.http.post(this.urapi_cat + '/updateCategory', { dataCategory, idCategory });
+  }
+
+  updateDocument(dataDocument: document, idDocument: number): Observable<any> {
+    return this.http.post(this.urapi_doc + '/updateDocument', { dataDocument, idDocument });
+  }
 }

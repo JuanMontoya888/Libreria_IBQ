@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { user } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class UsersService {
     return this.http.get(this.urapi + '/getAllUsers');
   }
 
-  addNewUser(user: any): Observable<any> {
+  addNewUser(user: user): Observable<any> {
     return this.http.post(this.urapi + '/addNewUser', { user });
   }
 
@@ -26,8 +27,12 @@ export class UsersService {
     return this.http.delete(this.urapi + `/deleteUser/${id}`);
   }
 
-  updateUser(id: number, data: any): Observable<any> {
+  updateUser(id: number, data: user): Observable<any> {
     return this.http.post(this.urapi + '/updateUser', { id, data });
   }
 
+  addNewUsers(files: any): Observable<any> {
+    return this.http.post(this.urapi + '/addNewUsers', files,
+      { reportProgress: true, observe: 'events' });
+  }
 }
