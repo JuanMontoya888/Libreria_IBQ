@@ -4,6 +4,7 @@ import { user } from '../../../models/user';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -284,7 +285,7 @@ export class UsuariosComponent {
       const formData = new FormData();
 
       Array.from(files).forEach((file: File) => {
-        if (file.name.endsWith('.xlsx') || file.name.endsWith('.csv')) {
+        if (file.name.endsWith('.xlsx')) {
           formData.append('files', file, file.name);
         } else {
           Swal.fire({
@@ -306,14 +307,17 @@ export class UsuariosComponent {
         cancelButtonText: 'Cancelar',
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log(formData);
+          LoaderService.mostrar('Añadiendo usuarios!');
           this.usersService.addNewUsers(formData)
             .subscribe({
-              next: (result) => {
-                const { ok, mappedData } = result;
+              next: ({ ok, mappedData }) => {
                 console.log(ok, mappedData);
               },
               error: (error) => {
+              },
+              complete: () => {
+                LoaderService.cerrar();
+                this.getUsersDB();
               }
             });
         }
