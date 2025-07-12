@@ -110,7 +110,7 @@ export class UsuariosComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         // This is if user delete user since users's list
-        const id_account = index ? this.filteredUsers[index].id_account : this.formUser.get('id_account')?.value;
+        const id_account = index != null ? this.filteredUsers[index].id_account : this.formUser.get('id_account')?.value;
         this.usersService.deleteUser(Number(id_account)).subscribe({
           next: ({ ok, message }) => {
             if (ok) {
