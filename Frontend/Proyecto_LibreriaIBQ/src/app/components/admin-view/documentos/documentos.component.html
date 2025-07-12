@@ -17,6 +17,7 @@
                         </g>
                     </svg>
                 </div>
+
                 <button class="close-btn" (click)="filterString = ''; emitFilterFN()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
@@ -32,13 +33,14 @@
 
     <div class="div-docs-">
         @if (this.documents.length > 0) {
-        <h1>Usuarios</h1>
+        <h1>Documentos</h1>
         <div class="doc_div" style="cursor: default; background-color: transparent;">
             <img src="" alt="">
             <span>Nombre</span>
             <span>File</span>
             <span>Categoria</span>
             <span>Fecha</span>
+            <span></span>
             <span></span>
         </div>
         <div class="doc_div" style="cursor: default; background-color: transparent; height: 1px;"></div>
@@ -102,12 +104,12 @@
     @if (showFormDocument) {
     <div class="container body_login_register py-5">
         <section class="text-center mb-4">
-            <h1 [innerHTML]="isAddingNewDocument ? 'Añadir Usuario' : 'Editar Usuario'"></h1>
+            <h1 [innerHTML]="isAddingNewDocument ? 'Añadir Documento' : 'Editar Documento'"></h1>
         </section>
 
         <section class="row justify-content-center">
             <div class="col-12 col-sm-10 col-md-8 col-lg-6">
-                <form [formGroup]="this.formDocument">
+                <form [formGroup]="formDocument">
 
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
@@ -115,39 +117,21 @@
                             placeholder="al346655">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="passw" class="form-label">Contraseña</label>
-                        <input [readonly]="isAddingNewDocument" type="text" class="form-control" formControlName="passw"
-                            placeholder="*******">
-                    </div>
 
                     <div class="mb-3">
-                        <label for="first_name" class="form-label">Nombre(s)</label>
-                        <input type="text" class="form-control" formControlName="first_name" placeholder="Juan">
+                        <label for="file_name" class="form-label">Nombre del archivo</label>
+                        <input readonly type="text" class="form-control" formControlName="file_name"
+                            placeholder="IA_Aplicada">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="last_name" class="form-label">Apellido(s)</label>
-                        <input type="text" class="form-control" formControlName="last_name" placeholder="Hernández">
-                    </div>
+                    <div>
+                        <select formControlName="file_category" name="opcion">
+                            <option value="" selected>Selecciona una categoría</option>
 
-                    <div class="mb-3">
-                        <label for="id" class="form-label">Id Personal</label>
-                        <input type="number" class="form-control" formControlName="id" placeholder="Ej. 102030">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label d-block">¿Es administrador?</label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" formControlName="is_admin" [value]="true"
-                                id="adminYes">
-                            <label class="form-check-label" for="adminYes">Sí</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" formControlName="is_admin" [value]="false"
-                                id="adminNo">
-                            <label class="form-check-label" for="adminNo">No</label>
-                        </div>
+                            @for (category of this.categories; track category.id_category) {
+                            <option [value]="category.category_name" [innerHTML]="category.category_name"></option>
+                            }
+                        </select>
                     </div>
 
                     <div class="alerts">
@@ -174,6 +158,24 @@
         <div class="mt-3 text-center"></div>
     </div>
 
+    <div class="div-upload">
+        <form class="file-upload-form" (drop)="uploadFile($event)" (dragover)="onDragOver($event)"
+            (dragenter)="onDragEnter($event)">
+            <label for="file" class="file-upload-label">
+                <div class="file-upload-design">
+                    <svg viewBox="0 0 640 512" height="1em">
+                        <path
+                            d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z">
+                        </path>
+                    </svg>
+                    <p>Drag and Drop</p>
+                    <p>or</p>
+                    <span class="browse-button">Browse file</span>
+                    <input (change)="uploadFile($event)" multiple accept=".xlsx" type="file" id="file" />
+                </div>
+            </label>
+        </form>
+    </div>
     }
 
 

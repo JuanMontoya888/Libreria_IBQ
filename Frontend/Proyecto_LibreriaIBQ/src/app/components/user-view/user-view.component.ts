@@ -3,6 +3,8 @@ import { NavbarUserComponent } from '../navbar-user/navbar-user.component';
 import { DocumentsService } from '../../services/documents.service';
 import { document } from '../../models/document';
 import { DatePipe } from '@angular/common';
+import { user } from '../../models/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-view',
@@ -17,8 +19,11 @@ export class UserViewComponent {
   documents: Array<document> = [];
   documentsFiltered: Array<document> = [];
 
+  user!: user;
+
   constructor(
     private docsService: DocumentsService,
+    private router: Router
   ) { }
 
 
@@ -35,6 +40,10 @@ export class UserViewComponent {
           console.log(err);
         }
       });
+
+    const userLS = localStorage.getItem('user');
+    if (userLS != null) this.user = JSON.parse(userLS);
+    else this.router.navigate(['/login']);
 
   }
 

@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { document } from '../../../models/document';
 import { DocumentsService } from '../../../services/documents.service';
+import { user } from '../../../models/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-documentos',
@@ -17,6 +19,8 @@ import { DocumentsService } from '../../../services/documents.service';
 export class DocumentosComponent {
   documents: Array<document> = [];
   filteredDocuments: Array<document> = [];
+  categories: Array<any> = [];
+  user!: user;
   formDocument!: FormGroup;
   showFormDocument: boolean = false;
   isAddingNewDocument: boolean = false;
@@ -24,13 +28,34 @@ export class DocumentosComponent {
 
   constructor(
     private docsService: DocumentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
-    this.formDocument = this.formBuilder.group({});
+    this.formDocument = this.formBuilder.group({
+      username: ['', Validators.required],
+      user_id: ['', Validators.required],
+      file_category: [''],
+      id_category: [''],
+      file_name: ['', Validators.required],
+      file_path: ['', Validators.required],
+      file_type: ['', Validators.required],
+    });
+
+
+    this.docsService.getAllCategories()
+      .subscribe({
+        next: ({ ok, categories }) => {
+          if (ok) this.categories = categories;
+        }
+      });
 
     this.getDocumentsDB();
+
+
+    const userLS = localStorage.getItem('user');
+    if (userLS != null) this.user = JSON.parse(userLS);
+
   }
 
   getDocumentsDB(): void {
@@ -73,6 +98,10 @@ export class DocumentosComponent {
 
     this.isAddingNewDocument = true;
     this.formDocument.reset();
+    this.formDocument.patchValue({
+      username: this.user.username,
+      user_id: this.user.id
+    });
   }
 
 
@@ -87,4 +116,18 @@ export class DocumentosComponent {
   addNewDocument(): void {
 
   }
+
+  uploadFile(event: Event | DragEvent): void {
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  onDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
 }

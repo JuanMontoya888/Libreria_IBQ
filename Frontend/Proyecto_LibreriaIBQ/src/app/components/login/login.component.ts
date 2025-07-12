@@ -49,6 +49,7 @@ export class LoginComponent {
           }
           const { user } = result;
 
+          localStorage.setItem('user', JSON.stringify(user));
           user.is_admin ? this.router.navigate(['/admin/usuarios']) : this.router.navigate(['/user-view']);
         },
         error: (error) => {
