@@ -148,7 +148,7 @@
                             [innerHTML]="isAddingNewUser ? 'Añadir Usuario' : 'Modificar Usuario'"></button>
                         <button [hidden]="isAddingNewUser" (click)="deleteUser()" type="submit">Eliminar
                             Usuario</button>
-                        <button (click)="this.showFormUser = false" type="submit">Cancelar</button>
+                        <button (click)="this.showFormUser = false; isAddingNewUser = true" type="submit">Cancelar</button>
                     </div>
 
                 </form>

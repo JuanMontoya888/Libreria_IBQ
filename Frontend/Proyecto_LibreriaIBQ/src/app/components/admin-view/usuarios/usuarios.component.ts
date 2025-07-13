@@ -129,7 +129,7 @@ export class UsuariosComponent {
               Swal.fire({
                 icon: 'error',
                 title: 'Error al eliminar',
-                text: message || 'No se pudo eliminar el usuario.',
+                text: 'No se pudo eliminar el usuario.',
               });
             }
           },
@@ -137,7 +137,7 @@ export class UsuariosComponent {
             Swal.fire({
               icon: 'error',
               title: 'Error del servidor',
-              text: err?.message || 'Ocurrió un error inesperado al eliminar.',
+              text: 'Ocurrió un error inesperado al eliminar.',
             });
           }
         });

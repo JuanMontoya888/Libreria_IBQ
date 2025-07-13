@@ -342,3 +342,9 @@ input:-webkit-autofill:active {
     padding: 10rem;
 }
 
+.div_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding: 2rem;
+}

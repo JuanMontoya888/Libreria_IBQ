@@ -42,4 +42,8 @@ export class DocumentsService {
   updateDocument(dataDocument: document, idDocument: number): Observable<any> {
     return this.http.post(this.urapi_doc + '/updateDocument', { dataDocument, idDocument });
   }
+
+  addNewDocument(data: FormData): Observable<any> {
+    return this.http.post(this.urapi_doc + '/addNewDocument', data);
+  }
 }

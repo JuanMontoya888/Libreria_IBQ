@@ -28,7 +28,7 @@
             </label>
 
         </form>
-        <button (click)="addingNewDoc()">Añadir</button>
+        <button (click)="addingNewDoc()">Añadir documentos</button>
     </div>
 
     <div class="div-docs-">
@@ -77,13 +77,13 @@
                         </path>
                     </svg>
                 </button>
-                <button class="deleteBtn delete-button" (click)="deleteDocument()">
+                <button class="deleteBtn delete-button" (click)="deleteDocument(index)">
                     <svg style="width: 25px; display: block;" class="trash-svg" viewBox="0 -10 64 74"
                         xmlns="http://www.w3.org/2000/svg">
                         <g id="trash-can">
                             <rect x="16" y="24" width="32" height="30" rx="3" ry="3" fill="#e74c3c"></rect>
 
-                            <g transform-origin="12 18" id="lid-group">
+                            <g transform-origin="12 18" id="lid-group" (click)="docSelected(index)">
                                 <rect x="12" y="12" width="40" height="6" rx="2" ry="2" fill="#c0392b"></rect>
                                 <rect x="26" y="8" width="12" height="4" rx="2" ry="2" fill="#c0392b"></rect>
                             </g>
@@ -101,63 +101,105 @@
 
     </div>
 
+    <hr>
+    <hr>
     @if (showFormDocument) {
-    <div class="container body_login_register py-5">
-        <section class="text-center mb-4">
-            <h1 [innerHTML]="isAddingNewDocument ? 'Añadir Documento' : 'Editar Documento'"></h1>
-        </section>
+    <div class="container body_login_register py-5 div-docs-">
+        <form [formGroup]="this.formDocument">
 
-        <section class="row justify-content-center">
-            <div class="col-12 col-sm-10 col-md-8 col-lg-6">
-                <form [formGroup]="formDocument">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre archivo</th>
+                        <th>ID Usuario</th>
+                        <th>Categoría</th>
+                        <th>Tipo de archivo</th>
+                        <th>Fecha subida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if( isAddingNewDocument) {
+                    @if (this.docs.length > 0) {
+                    @for (doc of this.docs; track doc.id_document; let index = $index) {
+                    <tr>
+                        <td>
+                            <input [ngModelOptions]="{standalone: true}" type="text" value="doc.file_name"
+                                [(ngModel)]="doc.file_name" readonly />
+                        </td>
+                        <td>
+                            <input [ngModelOptions]="{standalone: true}" type="number" [(ngModel)]="doc.user_id" />
+                        </td>
+                        <td>
+                            <input [ngModelOptions]="{standalone: true}" type="text" [(ngModel)]="doc.file_category" />
+                        </td>
+                        <td>
+                            <input [ngModelOptions]="{standalone: true}" type="text" [(ngModel)]="doc.file_type"
+                                readonly />
+                        </td>
+                        <td>
+                            <input [ngModelOptions]="{standalone: true}" type="datetime-local"
+                                [(ngModel)]="doc.uploaded_at" />
+                        </td>
+                        <td>
+                            <button class="deleteBtn delete-button" (click)="removeDocumentAfterUpload(index)">
+                                <svg style="width: 25px; display: block;" class="trash-svg" viewBox="0 -10 64 74"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g id="trash-can">
+                                        <rect x="16" y="24" width="32" height="30" rx="3" ry="3" fill="#e74c3c"></rect>
 
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input readonly type="text" class="form-control" formControlName="username"
-                            placeholder="al346655">
-                    </div>
+                                        <g transform-origin="12 18" id="lid-group" (click)="docSelected(index)">
+                                            <rect x="12" y="12" width="40" height="6" rx="2" ry="2" fill="#c0392b">
+                                            </rect>
+                                            <rect x="26" y="8" width="12" height="4" rx="2" ry="2" fill="#c0392b">
+                                            </rect>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                    }
 
+                    } @else {
+                    <tr>
+                        <td>
+                            <input type="text" formControlName="file_name" readonly />
+                        </td>
+                        <td>
+                            <input type="number" formControlName="user_id" />
+                        </td>
+                        <td>
+                            <input type="text" formControlName="file_category" />
+                        </td>
+                        <td>
+                            <input type="text" formControlName="file_type" readonly />
+                        </td>
+                        <td>
+                            <input type="text" formControlName="uploaded_at" readonly />
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
 
-                    <div class="mb-3">
-                        <label for="file_name" class="form-label">Nombre del archivo</label>
-                        <input readonly type="text" class="form-control" formControlName="file_name"
-                            placeholder="IA_Aplicada">
-                    </div>
-
-                    <div>
-                        <select formControlName="file_category" name="opcion">
-                            <option value="" selected>Selecciona una categoría</option>
-
-                            @for (category of this.categories; track category.id_category) {
-                            <option [value]="category.category_name" [innerHTML]="category.category_name"></option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="alerts">
-                        @if (formDocument.touched && formDocument.invalid) {
-                        <div>Rellenar campos.</div>
-                        }
-
-                    </div>
-
-                    <div class="d-flex justify-content-center gap-3 w-100 mt-3" style="width: 100%;">
-                        <button [disabled]="this.formDocument.invalid"
-                            (click)="isAddingNewDocument ? addNewDocument() : modifyDocument()" type="submit"
-                            [innerHTML]="isAddingNewDocument ? 'Añadir Usuario' : 'Modificar Usuario'"></button>
-                        <button [hidden]="isAddingNewDocument" (click)="deleteDocument()" type="submit">Eliminar
-                            Usuario</button>
-                        <button (click)="this.showFormDocument = false" type="submit">Cancelar</button>
-                    </div>
-
-                </form>
-
-            </div>
-        </section>
 
         <div class="mt-3 text-center"></div>
     </div>
 
+    <div class="div_buttons">
+        <button style="padding: 1rem;" (click)="isAddingNewDocument ? addNewDocumentsDB() : modifyDocument()">Guardar
+            documento(s)</button>
+        <button style="padding: 1rem;" [hidden]="!isAddingNewDocument"
+            (click)="cancelUpload()" [innerHTML]="isAddingNewDocument ? 'Cancelar' : 'Añadir documentos'"></button> <!-- button for adding documents -->
+
+        <button [hidden]="isAddingNewDocument" (click)="this.showFormDocument = false ; this.isAddingNewDocument = true"
+            type="submit">Cancelar</button> <!-- button for modifyng  -->
+
+    </div>
+
+    @if(isAddingNewDocument) {
     <div class="div-upload">
         <form class="file-upload-form" (drop)="uploadFile($event)" (dragover)="onDragOver($event)"
             (dragenter)="onDragEnter($event)">
@@ -171,11 +213,13 @@
                     <p>Drag and Drop</p>
                     <p>or</p>
                     <span class="browse-button">Browse file</span>
-                    <input (change)="uploadFile($event)" multiple accept=".xlsx" type="file" id="file" />
+                    <input (change)="uploadFile($event)" multiple type="file" id="file" />
                 </div>
             </label>
         </form>
     </div>
+    }
+
     }
 
 

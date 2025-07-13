@@ -2,6 +2,26 @@ var express = require('express');
 var router = express.Router();
 const documents_db = require('../models/documents-mysql');
 
+// multer para guardar datos
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: 'public/uploads',
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname); // ".pdf"
+    const baseName = path.basename(file.originalname, ext)
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_.-]/g, '');
+
+    const finalName = `${baseName}${ext}`; // "1720855991231-CV_Juan.pdf"
+    cb(null, finalName);
+  }
+});
+
+const upload = multer({ storage });
+
+
 /* GET categories listing. */
 router.get('/', function (req, res, next) {
     res.send('respond with a resource');
@@ -23,9 +43,15 @@ router.get('/getAllDocuments', (req, res) => {
     }
 });
 
-router.post('/addNewDocument', (req, res) => {
+router.post('/addNewDocument', upload.single('document'), (req, res) => {
     try {
-        documents_db.addNewDocument(req.body, (err, result) => {
+        const file = req.file;
+        const doc = JSON.parse(req.body.data);
+
+        if (!file) return res.status(400).json({ ok: false, message: 'Archivo no recibido' });
+
+
+        documents_db.addNewDocument(doc, (err, result) => {
             if (err) return res.status(500).json({ ok: false, message: err });
 
             return res.status(200).json({ ok: true, message: result });
