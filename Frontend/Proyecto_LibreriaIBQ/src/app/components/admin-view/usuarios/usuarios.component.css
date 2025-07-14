@@ -24,26 +24,6 @@
     align-items: center;
 }
 
-.user_div {
-    width: 90%;
-    height: 25%;
-    border: 1px solid #333;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-
-    img {
-        height: 80%;
-    }
-}
-
-.user_div:hover {
-    cursor: pointer;
-    background-color: #444444;
-}
-
 
 
 /* Buscador css ------------------------------------------ */

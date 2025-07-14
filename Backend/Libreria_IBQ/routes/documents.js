@@ -1,22 +1,23 @@
 var express = require('express');
 var router = express.Router();
 const documents_db = require('../models/documents-mysql');
+const fs = require('fs');
 
 // multer para guardar datos
 const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-  destination: 'public/uploads',
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // ".pdf"
-    const baseName = path.basename(file.originalname, ext)
-      .replace(/\s+/g, '_')
-      .replace(/[^a-zA-Z0-9_.-]/g, '');
+    destination: 'public/uploads',
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const baseName = path.basename(file.originalname, ext)
+            .replace(/\s+/g, '_')
+            .replace(/[^a-zA-Z0-9_.-]/g, '');
 
-    const finalName = `${baseName}${ext}`; // "1720855991231-CV_Juan.pdf"
-    cb(null, finalName);
-  }
+        const finalName = `${baseName}${ext}`;
+        cb(null, finalName);
+    }
 });
 
 const upload = multer({ storage });
@@ -77,14 +78,29 @@ router.post('/updateDocument', (req, res) => {
     }
 });
 
-router.delete('/deleteDocument/:id', (req, res) => {
+router.delete('/deleteDocument/:id', async (req, res) => {
     try {
-        documents_db.deleteDocument(req.params.id, (err, result) => {
+        documents_db.getDocumentByID(req.params.id, (err, result) => {
             if (err) return res.status(500).json({ ok: false, message: err });
+            
+            const { file_path } = result[0];
 
-            return result.affectedRows === 0 ?
-                res.status(404).json({ ok: false, message: 'document-not-found' }) :
-                res.status(200).json({ ok: true, message: result });
+            fs.unlink(file_path, (err) => {
+                if (err) {
+                    console.error(`Error removing file: ${err}`);
+                    return;
+                }
+
+                console.log(`File ${file_path} has been successfully removed.`);
+            });
+
+            documents_db.deleteDocument(req.params.id, (error, resultado) => {
+                if (error) return res.status(500).json({ ok: false, message: error });
+
+                return resultado.affectedRows === 0 ?
+                    res.status(404).json({ ok: false, message: 'document-not-found' }) :
+                    res.status(200).json({ ok: true, message: result });
+            });
         });
     } catch (error) {
         return res.status(500).json({ ok: false, message: error });

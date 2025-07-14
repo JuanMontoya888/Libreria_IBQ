@@ -21,6 +21,7 @@ export class DocumentosComponent {
   documents: Array<document> = [];
   filteredDocuments: Array<document> = [];
   categories: Array<any> = [];
+  selectedCategory: any | null = null;
   user!: user;
   formDocument!: FormGroup;
   showFormDocument: boolean = false;
@@ -86,7 +87,19 @@ export class DocumentosComponent {
       ...this.filteredDocuments[index]
     });
 
-    console.log(this.formDocument.value)
+  }
+
+  changeCategory(flag?: boolean, index?: number): void {    
+    if (flag) {
+      this.docs[index!].id_category = this.categories.find((cat) => cat.category_name === this.docs[index!].file_category)?.id_category;
+      return;
+    }
+
+    Array.from(this.docs).forEach((doc: document) => {
+      doc.file_category = this.selectedCategory;
+      doc.id_category = this.categories.find((cat) => cat.category_name === this.selectedCategory)?.id_category;
+    });
+
   }
 
   emitFilterFN(): void {
@@ -124,7 +137,7 @@ export class DocumentosComponent {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.docsService.deleteDocumentByID(index)
+        this.docsService.deleteDocumentByID(this.documents[index].id_document)
           .subscribe({
             next: ({ ok, message }) => {
               if (ok) {
@@ -233,14 +246,18 @@ export class DocumentosComponent {
         const safeName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
         const finalName = `${timestamp}-${safeName}`;
 
+        const file_category = this.selectedCategory || '';
+        const id_category = this.categories.find((cat) => cat.category_name === this.selectedCategory)?.id_category || '';
+
+
         this.docs.push({
           id_document: 0,
           user_id: this.user.id,
           username: this.user.username,
-          file_category: '',
-          id_category: 0,
+          file_category: file_category,
+          id_category: id_category,
           file_name: finalName,
-          file_path: `/public/uploads/${finalName}`,
+          file_path: `./public/uploads/${finalName}`,
           file_type: file.type,
           uploaded_at: new Date(),
         });
@@ -248,7 +265,6 @@ export class DocumentosComponent {
       });
     }
 
-    console.log(this.docs);
   }
 
   onDragOver(event: DragEvent): void {
@@ -262,6 +278,10 @@ export class DocumentosComponent {
   }
 
   addNewDocumentsDB(): void {
+    if (this.docs?.length <= 0) {
+      return;
+    }
+
     Swal.fire({
       title: '¿Confirmar subida?',
       text: '¿Estás seguro de que deseas subir los documentos?',
@@ -296,6 +316,7 @@ export class DocumentosComponent {
           });
           this.documentsUploaded = null;
           this.docs = [];
+          this.getDocumentsDB();
         });
 
       }
