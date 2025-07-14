@@ -28,4 +28,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # documents in /public/uploads
-/uploads/
+/Backend/Libreria_IBQ/public/uploads/
