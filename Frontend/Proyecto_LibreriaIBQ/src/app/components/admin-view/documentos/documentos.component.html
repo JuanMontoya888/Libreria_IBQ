@@ -3,8 +3,9 @@
     <div class="d-flex justify-content-around w-100">
         <form class="form">
             <label for="search">
-                <input class="bg-dark text-white" (input)="emitFilterFN()" [(ngModel)]="filterString" [ngModelOptions]="{standalone: true}"
-                    class="input" type="text" required="" placeholder="Busqueda ..." id="search">
+                <input class="bg-dark text-white" (input)="emitFilterFN()" [(ngModel)]="filterString"
+                    [ngModelOptions]="{standalone: true}" class="input" type="text" required=""
+                    placeholder="Busqueda ..." id="search">
 
                 <div class="fancy-bg"></div>
                 <div class="search">
@@ -120,7 +121,8 @@
     <div class="container body_login_register py-5 div-docs-">
 
         <div>
-            <select class="form-select bg-dark text-white" [(ngModel)]="selectedCategory" name="opcion" (change)="changeCategory()">
+            <select class="form-select bg-dark text-white" [(ngModel)]="selectedCategory" name="opcion"
+                (change)="changeCategory()">
                 <option value="" selected>Selecciona una categoría</option>
 
                 @for (category of this.categories; track category) {
@@ -148,14 +150,16 @@
                     @for (doc of this.docs; track doc.id_document; let index = $index) {
                     <tr>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" type="text" [value]="doc.file_name.split('-').pop()" readonly />
+                            <input class="bg-dark text-white" type="text" [value]="doc.file_name.split('-').pop()"
+                                readonly />
                         </td>
                         <td class="align-middle">
                             <input class="bg-dark text-white" type="text" readonly [value]="doc.user_id" />
                         </td>
                         <td class="align-middle">
-                            <select class="form-select bg-dark text-white" [ngModelOptions]="{standalone: true}" [(ngModel)]="doc.file_category"
-                                [value]="selectedCategory" name="opcion" (change)="changeCategory(true, index)">
+                            <select class="form-select bg-dark text-white" [ngModelOptions]="{standalone: true}"
+                                [(ngModel)]="doc.file_category" [value]="selectedCategory" name="opcion"
+                                (change)="changeCategory(true, index)">
                                 <option value="" selected>Selecciona una categoría</option>
 
                                 @for (category of this.categories; track category.category_name) {
@@ -195,13 +199,21 @@
                     } @else {
                     <tr>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" type="text" formControlName="file_name" readonly />
+                            <input class="bg-dark text-white" type="text" [value]="formDocument.get('file_name')?.value.split('-').pop()" readonly />
                         </td>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" type="number" formControlName="user_id" />
+                            <input class="bg-dark text-white" type="number" formControlName="user_id" readonly />
                         </td>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" type="text" formControlName="file_category" />
+                            <select class="form-select bg-dark text-white" formControlName="file_category" name="opcion">
+                                <option value="" selected>Selecciona una categoría</option>
+
+                                @for (category of this.categories; track category.category_name) {
+                                <option [value]="category.category_name" [innerHTML]="category.category_name">
+                                </option>
+                                }
+                            </select>
+                            <!-- <input class="bg-dark text-white" [ngModelOptions]="{standalone: true}" type="text" [(ngModel)]="doc.file_category" /> -->
                         </td>
                         <td class="align-middle">
                             <input class="bg-dark text-white" type="text" formControlName="file_type" readonly />
@@ -209,6 +221,7 @@
                         <td class="align-middle">
                             <input class="bg-dark text-white" type="text" formControlName="uploaded_at" readonly />
                         </td>
+                        <td></td>
                     </tr>
                     }
                 </tbody>
