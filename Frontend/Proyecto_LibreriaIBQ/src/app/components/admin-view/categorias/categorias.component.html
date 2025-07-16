@@ -1,1 +1,141 @@
-<p>categorias works!</p>
+<div class="div-gen-categories">
+    <div class="d-flex justify-content-around w-100">
+        <form class="form">
+            <label for="search">
+                <input (input)="emitFilterFN()" [(ngModel)]="filterString" [ngModelOptions]="{standalone: true}"
+                    class="input" type="text" required="" placeholder="Busqueda ..." id="search">
+
+                <div class="fancy-bg"></div>
+                <div class="search">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"
+                        class="r-14j79pv r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-4wgw6l r-f727ji r-bnwqim r-1plcrui r-lrvibr">
+                        <g>
+                            <path
+                                d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+                <button class="close-btn" (click)="filterString = ''; emitFilterFN()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </label>
+
+        </form>
+        <button (click)="addingNewCategory()">Añadir Categoría</button>
+    </div>
+
+    <div class="div-categories-">
+        <table class="table table-striped table-hover table-dark">
+            @if (this.categories.length > 0) {
+            <thead>
+                <tr>
+                    <th><span>Id Categoría</span></th>
+                    <th><span>Id Personal</span></th>
+                    <th><span>Nombre Categoría</span></th>
+                    <th><span>Fecha</span></th>
+                    <th><span></span></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (category of filteredCategories; track category.id_category; let index = $index) {
+                <tr>
+                    <td class="align-middle"><span>{{ category.id_category }}</span></td>
+                    <td class="align-middle"><span>{{ category.user_id}}</span></td>
+                    <td class="align-middle"><span>{{ category.category_name }}</span></td>
+                    <td class="align-middle"><span>{{ category.created_at }}</span></td>
+                    <td class="align-middle">
+                        <div class="buttons-del-mod">
+                            <button class="editBtn" (click)="categorySelected(index)">
+                                <svg height="10px" viewBox="0 0 512 512">
+                                    <path
+                                        d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z">
+                                    </path>
+                                </svg>
+                            </button>
+                            <button class="deleteBtn delete-button" (click)="deleteCategory(index)">
+                                <svg style="width: 25px; display: block;" class="trash-svg" viewBox="0 -10 64 74"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g id="trash-can">
+                                        <rect x="16" y="24" width="32" height="30" rx="3" ry="3" fill="#e74c3c"></rect>
+
+                                        <g transform-origin="12 18" id="lid-group">
+                                            <rect x="12" y="12" width="40" height="6" rx="2" ry="2" fill="#c0392b">
+                                            </rect>
+                                            <rect x="26" y="8" width="12" height="4" rx="2" ry="2" fill="#c0392b">
+                                            </rect>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </button>
+
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+            } @else {
+            <div class="user_div" style="cursor: default; background-color: transparent; height: 1px;"></div>
+            <h1>No existen categorias registrados</h1>
+            }
+        </table>
+
+    </div>
+
+    @if (this.showFormCat) {
+    <div class="container body_login_register py-5">
+        <section class="text-center mb-4">
+            <h1 [innerHTML]="isAddingNewCat ? 'Añadir Categoría' : 'Editar Categoría'"></h1>
+        </section>
+
+        <section class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+                <form [formGroup]="this.formCategory">
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input readonly type="text" class="form-control" formControlName="username"
+                            placeholder="al346655">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category_name" class="form-label">Nombre Categoría</label>
+                        <input readonly type="text" class="form-control" formControlName="category_name"
+                            placeholder="Finanzas">
+                    </div>
+
+
+                    <div class="alerts">
+                        @if (formCategory.touched && formCategory.invalid) {
+                        <div>Rellenar campos.</div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3 w-100 mt-3" style="width: 100%;">
+                        <button [disabled]="this.formCategory.invalid"
+                            (click)="isAddingNewCat ? addNewCategory() : modifyCategory()" type="submit"
+                            [innerHTML]="isAddingNewCat ? 'Añadir Categoría' : 'Modificar Categoría'"></button>
+                        <button [hidden]="isAddingNewCat" (click)="deleteCategory()" type="submit">Eliminar
+                            Categoría</button>
+                        <button (click)="this.showFormCat= false; isAddingNewCat = true"
+                            type="submit">Cancelar</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </section>
+
+        <div class="mt-3 text-center"></div>
+    </div>
+
+    } <!-- if needs to add or edit some user -->
+
+
+</div>

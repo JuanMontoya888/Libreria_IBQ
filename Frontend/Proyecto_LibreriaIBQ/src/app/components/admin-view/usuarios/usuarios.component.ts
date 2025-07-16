@@ -188,7 +188,7 @@ export class UsuariosComponent {
                 Swal.fire({
                   icon: 'error',
                   title: 'Error al modificar',
-                  text: message || 'No se pudo modificar el usuario.',
+                  text: 'No se pudo modificar el usuario.',
                 });
               }
             },
@@ -196,7 +196,7 @@ export class UsuariosComponent {
               Swal.fire({
                 icon: 'error',
                 title: 'Error del servidor',
-                text: err?.message || 'Ocurrió un error inesperado al modificar.',
+                text: 'Ocurrió un error inesperado al modificar.',
               });
             }
           });

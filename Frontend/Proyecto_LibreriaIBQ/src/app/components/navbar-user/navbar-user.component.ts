@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DocumentsService } from '../../services/documents.service';
+import { category } from '../../models/categories';
 
 @Component({
   selector: 'app-navbar-user',
@@ -15,7 +16,7 @@ export class NavbarUserComponent {
   filterString: string = '';
   selectedCategory: string = '';
 
-  opciones = [ 'Informe', 'Manual Técnico', 'Tesis'];
+  opciones: Array<category> = [];
   @Output() emitFilter = new EventEmitter<{ filter: string, selectedCategory: string }>();
 
   constructor(

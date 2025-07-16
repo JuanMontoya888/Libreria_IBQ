@@ -3,17 +3,20 @@
     <div
         style="display: flex; flex-direction: column; align-items: flex-end ; justify-content: flex-end; width: 50vw; gap: 1rem;">
         <!-- Options -->
-        <div class="glass-radio-group" (change)="this.change()">
-            <input type="radio" id="glass-silver" name="plan" value="Usuarios" [(ngModel)]="buttonSelected" />
-            <label for="glass-silver">Usuarios</label>
+        <div class="radio-inputs bg-dark text-white" (change)="change()">
+            <label class="radio">
+                <input type="radio" name="radio" value="Usuarios" [(ngModel)]="buttonSelected">
+                <span class="name">Usuarios</span>
+            </label>
+            <label class="radio bg-dark text-white">
+                <input type="radio" name="radio" value="Documentos" [(ngModel)]="buttonSelected">
+                <span class="name">Documentos</span>
+            </label>
 
-            <input type="radio" id="glass-gold" name="plan" value="Documentos" [(ngModel)]="buttonSelected" />
-            <label for="glass-gold">Documentos</label>
-
-            <input type="radio" id="glass-platinum" name="plan" value="Categorias" [(ngModel)]="buttonSelected" />
-            <label for="glass-platinum">Categorias</label>
-
-            <div class="glass-glider"></div>
+            <label class="radio bg-dark text-white">
+                <input type="radio" name="radio" value="Categorias" [(ngModel)]="buttonSelected">
+                <span class="name">Categorias</span>
+            </label>
         </div>
 
         <!-- Logout button -->

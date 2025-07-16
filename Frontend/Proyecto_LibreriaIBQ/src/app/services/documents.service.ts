@@ -3,6 +3,7 @@ import { document } from '../models/document';
 import { documents } from '../../assets/documents';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { category } from '../models/categories';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,7 @@ export class DocumentsService {
     return this.http.delete(this.urapi_cat + `/deleteCategory/${id_category}`);
   }
 
-  updateCategory(dataCategory: any, idCategory: number): Observable<any> {
+  updateCategory(dataCategory: category, idCategory: number): Observable<any> {
     return this.http.post(this.urapi_cat + '/updateCategory', { dataCategory, idCategory });
   }
 
@@ -45,5 +46,9 @@ export class DocumentsService {
 
   addNewDocument(data: FormData): Observable<any> {
     return this.http.post(this.urapi_doc + '/addNewDocument', data);
+  }
+
+  addNewCategory(category: category): Observable<any> {
+    return this.http.post(this.urapi_cat + '/addNewCategory', category);
   }
 }

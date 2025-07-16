@@ -28,7 +28,7 @@
             </label>
 
         </form>
-        <button (click)="addingNewDoc()">Añadir documentos</button>
+        <button (click)="addingNewDoc()">Añadir Documentos</button>
     </div>
 
     <div class="div-docs-">
@@ -226,7 +226,7 @@
         <button style="padding: 1rem;" (click)="isAddingNewDocument ? addNewDocumentsDB() : modifyDocument()">Guardar
             documento(s)</button>
         <button style="padding: 1rem;" [hidden]="!isAddingNewDocument" (click)="cancelUpload()"
-            [innerHTML]="isAddingNewDocument ? 'Cancelar' : 'Añadir documentos'"></button>
+            [innerHTML]="isAddingNewDocument ? 'Cancelar' : 'Añadir Documentos'"></button>
         <!-- button for adding documents -->
 
         <button [hidden]="isAddingNewDocument" (click)="this.showFormDocument = false ; this.isAddingNewDocument = true"

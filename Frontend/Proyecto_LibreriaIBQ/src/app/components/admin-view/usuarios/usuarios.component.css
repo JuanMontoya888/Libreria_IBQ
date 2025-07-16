@@ -49,6 +49,15 @@
     width: var(--width-of-input);
     position: relative;
     isolation: isolate;
+
+    label {
+        width: 100%;
+        padding: 0.8em;
+        height: 40px;
+        padding-inline: var(--inline-padding-of-input);
+        display: flex;
+        align-items: center;
+    }
 }
 
 /* a fancy bg for showing background and border when focus. */
