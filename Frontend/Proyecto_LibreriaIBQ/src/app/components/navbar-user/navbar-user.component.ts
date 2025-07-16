@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DocumentsService } from '../../services/documents.service';
 import { category } from '../../models/categories';
+import { user } from '../../models/users';
 
 @Component({
   selector: 'app-navbar-user',
@@ -15,6 +16,7 @@ import { category } from '../../models/categories';
 export class NavbarUserComponent {
   filterString: string = '';
   selectedCategory: string = '';
+  user!: user;
 
   opciones: Array<category> = [];
   @Output() emitFilter = new EventEmitter<{ filter: string, selectedCategory: string }>();
@@ -38,6 +40,14 @@ export class NavbarUserComponent {
           console.log(err);
         }
       });
+
+    const userLS = localStorage.getItem('user');
+    if (userLS != null) {
+      this.user = JSON.parse(userLS)
+      this.user.is_admin ? this.router.navigate(['/admin/usuarios']) : () => { };
+
+    } else this.router.navigate(['/login']);
+
   }
 
   emitFilterFN(): void {
@@ -47,5 +57,6 @@ export class NavbarUserComponent {
 
   logout(): void {
     this.router.navigate(['/login']);
+    localStorage.clear();
   }
 }

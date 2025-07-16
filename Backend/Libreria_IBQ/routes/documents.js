@@ -44,6 +44,32 @@ router.get('/getAllDocuments', (req, res) => {
     }
 });
 
+router.get('/getDocumentByID/:id', (req, res) => {
+    try {
+        documents_db.getDocumentByID(req.params.id, (err, result) => {
+            if (err) return res.status(500).json({ ok: false, message: err, file: null });
+            if (result.length == 0) return res.status(200).json({ ok: false, documents: result });
+
+            const { file_path } = result[0];
+            const pathProj = __dirname.split('\\').slice(0, -1).join("\\");
+            const relativePath = path.join(pathProj, file_path);
+
+
+            return res.sendFile(relativePath, (err) => {
+                if (err) {
+                    console.error('Error al enviar el archivo:', err);
+                    return res.status(500).send('Error al enviar el archivo.');
+                } else {
+                    console.log('Archivo enviado correctamente.');
+                }
+            });
+        });
+
+    } catch (error) {
+        return res.status(500).json({ ok: false, message: error, file: null });
+    }
+});
+
 router.post('/addNewDocument', upload.single('document'), (req, res) => {
     try {
         const file = req.file;
@@ -82,7 +108,7 @@ router.delete('/deleteDocument/:id', async (req, res) => {
     try {
         documents_db.getDocumentByID(req.params.id, (err, result) => {
             if (err) return res.status(500).json({ ok: false, message: err });
-            
+
             const { file_path } = result[0];
 
             fs.unlink(file_path, (err) => {

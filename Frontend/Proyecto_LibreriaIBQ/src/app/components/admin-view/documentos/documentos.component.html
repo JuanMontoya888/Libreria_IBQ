@@ -148,11 +148,10 @@
                     @for (doc of this.docs; track doc.id_document; let index = $index) {
                     <tr>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" [ngModelOptions]="{standalone: true}" type="text" value="doc.file_name"
-                                [(ngModel)]="doc.file_name" readonly />
+                            <input class="bg-dark text-white" type="text" [value]="doc.file_name.split('-').pop()" readonly />
                         </td>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" [ngModelOptions]="{standalone: true}" type="number" [(ngModel)]="doc.user_id" />
+                            <input class="bg-dark text-white" type="text" readonly [value]="doc.user_id" />
                         </td>
                         <td class="align-middle">
                             <select class="form-select bg-dark text-white" [ngModelOptions]="{standalone: true}" [(ngModel)]="doc.file_category"
@@ -167,12 +166,10 @@
                             <!-- <input class="bg-dark text-white" [ngModelOptions]="{standalone: true}" type="text" [(ngModel)]="doc.file_category" /> -->
                         </td>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" [ngModelOptions]="{standalone: true}" type="text" [(ngModel)]="doc.file_type"
-                                readonly />
+                            <input class="bg-dark text-white" type="text" [value]="doc.file_type" readonly />
                         </td>
                         <td class="align-middle">
-                            <input class="bg-dark text-white" [ngModelOptions]="{standalone: true}" type="datetime-local"
-                                [(ngModel)]="doc.uploaded_at" />
+                            <input class="bg-dark text-white" type="text" [value]="doc.uploaded_at" readonly />
                         </td>
                         <td class="align-middle">
                             <button class="deleteBtn delete-button" (click)="removeDocumentAfterUpload(index)">

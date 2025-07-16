@@ -1,4 +1,4 @@
-export interface document {
+export interface document_ {
     id_document: number;
     user_id: number;
     username: string;

@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { NavbarUserComponent } from '../navbar-user/navbar-user.component';
 import { DocumentsService } from '../../services/documents.service';
-import { document } from '../../models/document';
+import { document_ } from '../../models/documents';
 import { DatePipe } from '@angular/common';
-import { user } from '../../models/user';
-import { Router } from '@angular/router';
+import { user } from '../../models/users';
 
 @Component({
   selector: 'app-user-view',
@@ -16,14 +15,13 @@ import { Router } from '@angular/router';
   styleUrl: './user-view.component.css'
 })
 export class UserViewComponent {
-  documents: Array<document> = [];
-  documentsFiltered: Array<document> = [];
+  documents: Array<document_> = [];
+  documentsFiltered: Array<document_> = [];
 
   user!: user;
 
   constructor(
     private docsService: DocumentsService,
-    private router: Router
   ) { }
 
 
@@ -32,7 +30,7 @@ export class UserViewComponent {
       .subscribe({
         next: (result) => {
           const { ok, documents } = result;
-          this.documents = ok ? documents : this.docsService.getDocuments2();
+          this.documents = ok ? documents : [];
 
           this.documentsFiltered = this.documents;
         },
@@ -40,11 +38,6 @@ export class UserViewComponent {
           console.log(err);
         }
       });
-
-    const userLS = localStorage.getItem('user');
-    if (userLS != null) this.user = JSON.parse(userLS);
-    else this.router.navigate(['/login']);
-
   }
 
   filterDocuments(filters: { filter: string, selectedCategory: string }): void {
@@ -53,7 +46,7 @@ export class UserViewComponent {
 
     // Primer filtro que escanea campo por campo
     this.documentsFiltered = this.documents
-      .filter((doc: document) => {
+      .filter((doc: document_) => {
         if (!doc) return false;
 
         return (Object.entries(doc).some((dc) => dc?.toString().toLowerCase().includes(query)));
@@ -61,13 +54,35 @@ export class UserViewComponent {
 
     // Second filter, only scan category
     this.documentsFiltered = this.documentsFiltered
-      .filter((doc: document) => { // If it returns true, will return document
+      .filter((doc: document_) => { // If it returns true, will return document_
         if (!doc) return false;
         if (!selectedCategory) return true;
 
         return doc.file_category === selectedCategory;
       });
 
+  }
+
+  downloadDocument(index: number): void {
+    const { id_document } = this.documentsFiltered[index];
+
+    this.docsService.getDocumentByID(id_document)
+      .subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = this.documentsFiltered[index].file_name;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url); // liberar memoria
+        },
+        error: (err) => {
+          console.error('Error al descargar documento:', err);
+        }
+
+      });
   }
 
 }

@@ -86,6 +86,7 @@ router.post('/addNewUsers', upload.array('files'), async (req, res) => {
 
     // Abrir el archivo
     const files = req.files;
+    let numUsers;
 
     const results = await Promise.all(Array.from(files).map(async (file) => {
       const workbook = await XlsxPopulate.fromDataAsync(file.buffer);
@@ -96,6 +97,7 @@ router.post('/addNewUsers', upload.array('files'), async (req, res) => {
       const jsonData = [];
       const headers = data[0].map(h => (typeof h === 'string' ? h.trim() : undefined));
 
+      numUsers = data.length - 1;
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
         const rowObject = [];
@@ -141,7 +143,7 @@ router.post('/addNewUsers', upload.array('files'), async (req, res) => {
         id: dataUser.id
       }));
 
-    return res.status(200).json({ ok: true, mappedData });
+    return res.status(200).json({ ok: true, mappedData, numUsers });
   } catch (error) {
     return res.status(500).json({ ok: false, message: error });
   }

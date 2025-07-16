@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { UsersService } from '../../../services/users.service';
-import { user } from '../../../models/user';
+import { user } from '../../../models/users';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
@@ -297,31 +297,69 @@ export class UsuariosComponent {
       });
 
       Swal.fire({
-        icon: 'warning',
-        title: 'Cargar archivo',
-        text: '¿Deseas procesar los datos del archivo seleccionado? Esto puede sobrescribir datos existentes.',
+        title: '¿Deseas añadir los usuarios?',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Procesar ahora',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Sí, añadir',
       }).then((result) => {
         if (result.isConfirmed) {
-          LoaderService.mostrar('Añadiendo usuarios!');
-          this.usersService.addNewUsers(formData)
-            .subscribe({
-              next: ({ ok, mappedData }) => {
-                console.log(ok, mappedData);
-              },
-              error: (error) => {
-              },
-              complete: () => {
-                LoaderService.cerrar();
-                this.getUsersDB();
-              }
-            });
+          LoaderService.mostrar('Añadiendo usuarios...');
+          this.usersService.addNewUsers(formData).subscribe({
+            next: ({ ok, mappedData, numUsers }) => {
+              const resumen = {
+                exitosos: 0,
+                yaExistentes: 0,
+                errores: 0
+              };
+
+              // Clasificamos los resultados
+              mappedData.forEach((resp: any) => {
+                if (resp.success) {
+                  resumen.exitosos++;
+                } else if (resp.message === 'user-exists') {
+                  resumen.yaExistentes++;
+                } else {
+                  resumen.errores++;
+                }
+              });
+
+              const totalFallidos = mappedData.length;
+              const totalExitosos = numUsers - totalFallidos;
+
+              const mensaje = `
+                                <div style="text-align: left; font-size: 25px; line-height: 1.6;">
+                                  <ul style="padding-left: 3em; margin: 0;">
+                                    <li><strong>${resumen.exitosos}</strong> usuario(s) añadido(s) exitosamente.</li>
+                                    <li><strong>${resumen.yaExistentes}</strong> ya existían.</li>
+                                    <li><strong>${resumen.errores}</strong> con error del servidor.</li>
+                                  </ul>
+                                </div>
+                              `;
+
+              Swal.fire({
+                title: 'Resultado de la carga',
+                html: mensaje,
+                icon: resumen.errores > 0 ? 'warning' : 'success',
+                confirmButtonText: 'Aceptar',
+              });
+            }
+            ,
+            error: (error) => {
+              console.error('Error del servidor:', error);
+              LoaderService.cerrar();
+
+              Swal.fire({
+                icon: 'error',
+                title: 'Error del servidor',
+                text: 'Ocurrió un error inesperado.',
+              });
+            },
+            complete: () => {
+              this.getUsersDB();
+            }
+          });
         }
       });
+
     }
   }
 

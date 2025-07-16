@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavbarAdminComponent } from '../navbar-admin/navbar-admin.component';
-import { Router, RouterOutlet } from '@angular/router';
-import { user } from '../../models/user';
+import { user } from '../../models/users';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin-view',
@@ -15,15 +15,5 @@ import { user } from '../../models/user';
 export class AdminViewComponent {
   user!: user;
 
-  constructor(
-    private router: Router
-  ) { }
-
-  ngOnInit(): void {
-    const userLS = localStorage.getItem('user');
-    if (userLS != null) this.user = JSON.parse(userLS);
-    else this.router.navigate(['/login']);
-
-  }
-
+  constructor() { }
 }

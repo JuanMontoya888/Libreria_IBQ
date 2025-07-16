@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { document } from '../../../models/document';
+import { document_ } from '../../../models/documents';
 import { DocumentsService } from '../../../services/documents.service';
-import { user } from '../../../models/user';
+import { user } from '../../../models/users';
 import Swal from 'sweetalert2';
 import { LoaderService } from '../../../services/loader.service';
 import { catchError, forkJoin, of } from 'rxjs';
@@ -18,8 +18,8 @@ import { catchError, forkJoin, of } from 'rxjs';
   styleUrl: './documentos.component.css'
 })
 export class DocumentosComponent {
-  documents: Array<document> = [];
-  filteredDocuments: Array<document> = [];
+  documents: Array<document_> = [];
+  filteredDocuments: Array<document_> = [];
   categories: Array<any> = [];
   selectedCategory: any | null = null;
   user!: user;
@@ -29,7 +29,7 @@ export class DocumentosComponent {
   filterString!: string;
 
   documentsUploaded!: FileList | null;
-  docs: document[] = [];
+  docs: document_[] = [];
 
   constructor(
     private docsService: DocumentsService,
@@ -47,7 +47,6 @@ export class DocumentosComponent {
       file_type: ['', Validators.required],
       uploaded_at: ['', Validators.required]
     });
-
 
     this.docsService.getAllCategories()
       .subscribe({
@@ -95,7 +94,7 @@ export class DocumentosComponent {
       return;
     }
 
-    Array.from(this.docs).forEach((doc: document) => {
+    Array.from(this.docs).forEach((doc: document_) => {
       doc.file_category = this.selectedCategory;
       doc.id_category = this.categories.find((cat) => cat.category_name === this.selectedCategory)?.id_category;
     });
@@ -106,10 +105,10 @@ export class DocumentosComponent {
     const query = this.filterString.toString().toLowerCase();
 
     this.filteredDocuments = this.documents
-      .filter((document) => {
-        if (!document) return false;
+      .filter((document_) => {
+        if (!document_) return false;
 
-        return (Object.entries(document).some((doc) => doc?.toString().toLowerCase().includes(query)));
+        return (Object.entries(document_).some((doc) => doc?.toString().toLowerCase().includes(query)));
       });
   }
 
@@ -295,7 +294,7 @@ export class DocumentosComponent {
       if (result.isConfirmed) {
         LoaderService.mostrar('Subiendo Documentos');
 
-        const requests = this.docs.map((doc: document, index) => {
+        const requests = this.docs.map((doc: document_, index) => {
           const formData = new FormData();
           formData.append('document', this.documentsUploaded![index]!, doc.file_name);
           formData.append('data', JSON.stringify(doc));
@@ -304,6 +303,7 @@ export class DocumentosComponent {
             catchError(() => of({ ok: false })) // en caso de error, devolver un resultado falso
           );
         });
+
 
         forkJoin(requests).subscribe(results => {
           const exitosos = results.filter(r => r.ok).length;

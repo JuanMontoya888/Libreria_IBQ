@@ -3,7 +3,7 @@ import { category } from '../../../models/categories';
 import { DocumentsService } from '../../../services/documents.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { user } from '../../../models/user';
+import { user } from '../../../models/users';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-categorias',
@@ -32,11 +32,11 @@ export class CategoriasComponent {
 
   ngOnInit(): void {
     this.formCategory = this.formBuilder.group({
-      id_category: ['', Validators.required],
+      id_category: [''],
       user_id: ['', Validators.required],
       username: ['', Validators.required],
       category_name: ['', Validators.required],
-      created_at: ['', Validators.required],
+      created_at: [''],
     });
 
     this.getCategoriesDB();
@@ -203,6 +203,10 @@ export class CategoriasComponent {
       });
       return;
     }
+
+    this.formCategory.patchValue({
+      created_at: new Date()
+    });
 
     const { id_category, ...cat } = this.formCategory?.value;
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { document } from '../models/document';
-import { documents } from '../../assets/documents';
+import { document_ } from '../models/documents';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { category } from '../models/categories';
@@ -20,12 +19,15 @@ export class DocumentsService {
     return this.http.get(this.urapi_doc + '/getAllDocuments');
   }
 
-  getAllCategories(): Observable<any> {
-    return this.http.get(this.urapi_cat + '/getAllCategories');
+  getDocumentByID(id_document: number): Observable<any> {
+    return this.http.get(this.urapi_doc + `/getDocumentByID/${id_document}`,
+      {
+        responseType: 'blob'
+      });
   }
 
-  getDocuments2(): Array<document> {
-    return documents;
+  getAllCategories(): Observable<any> {
+    return this.http.get(this.urapi_cat + '/getAllCategories');
   }
 
   deleteDocumentByID(id_document: number): Observable<any> {
@@ -40,7 +42,7 @@ export class DocumentsService {
     return this.http.post(this.urapi_cat + '/updateCategory', { dataCategory, idCategory });
   }
 
-  updateDocument(dataDocument: document, idDocument: number): Observable<any> {
+  updateDocument(dataDocument: document_, idDocument: number): Observable<any> {
     return this.http.post(this.urapi_doc + '/updateDocument', { dataDocument, idDocument });
   }
 
