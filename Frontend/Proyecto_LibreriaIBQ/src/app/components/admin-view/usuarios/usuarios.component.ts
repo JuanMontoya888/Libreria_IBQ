@@ -291,7 +291,7 @@ export class UsuariosComponent {
           Swal.fire({
             icon: 'error',
             title: 'Error al subir documento',
-            text: 'Solo se permiten documentos excel y csv.',
+            text: 'Solo se permiten documentos excel.',
           });
         }
       });
@@ -341,8 +341,7 @@ export class UsuariosComponent {
                 icon: resumen.errores > 0 ? 'warning' : 'success',
                 confirmButtonText: 'Aceptar',
               });
-            }
-            ,
+            },
             error: (error) => {
               console.error('Error del servidor:', error);
               LoaderService.cerrar();

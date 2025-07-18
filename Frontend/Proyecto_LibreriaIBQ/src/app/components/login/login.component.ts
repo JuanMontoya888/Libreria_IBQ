@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { UsersService } from '../../services/users.service';
+import { LoaderService } from '../../services/loader.service';
 @Component({
   selector: 'app-login',
   imports: [
@@ -33,9 +34,11 @@ export class LoginComponent {
 
   login(): void {
     const credentials = {};
+    LoaderService.mostrar('Validando Credenciales');
     this.usersService.login(this.login_form.get('username')?.value, this.login_form.get('password')?.value)
       .subscribe({
         next: (result) => {
+          LoaderService.cerrar();
           const { ok, message } = result;
 
           if (!ok) {
@@ -53,7 +56,12 @@ export class LoginComponent {
           user.is_admin ? this.router.navigate(['/admin/usuarios']) : this.router.navigate(['/user-view']);
         },
         error: (error) => {
-          console.log(error);
+          LoaderService.cerrar();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: 'Ocurrió un error inesperado.',
+          });
         }
       });
   }
